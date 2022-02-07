@@ -31,3 +31,5 @@ export const StorageKeys = {
   ACCESS_TOKEN: 'access_token',
 }
 
+
+export const DEFAULT_PASSWORD = '123456a@'

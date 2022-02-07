@@ -1,57 +1,57 @@
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, DatePicker, Descriptions, Form, Input, message, Select, Upload } from 'antd';
-import categoryAPI from 'api/categoryAPI';
+import { CheckSquareOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Card, DatePicker, Descriptions, Form, Input, message, Modal, Select, Upload } from 'antd';
+import artistAPI from 'api/artistAPI';
 import { IMAGE_API_URL } from 'config';
 import { statuses } from 'constants';
 import moment from 'moment';
-import React, { useEffect, useRef, useState } from 'react';
-import { useQuery } from 'react-query';
-import { differentObject, formatDate, requiredLabel, unAccent } from 'utils';
+import React, { useState } from 'react';
+import { useMutation } from 'react-query';
+import { useHistory } from 'react-router-dom';
+import { requiredLabel } from 'utils';
 
-function ArtistForm({ data = {}, onUpdate }) {
+function ArtistAddForm() {
   const [form] = Form.useForm();
-  const dataRef = useRef(null);
-  const [changedData, setChangedData] = useState({});
-
+  const history = useHistory();
   const [imageLoading, setImageLoading] = useState(false);
   const [bannerLoading, setBannerLoading] = useState(false);
   const [avatarURL, setAvatarURL] = useState(null);
   const [bannerURL, setBannerURL] = useState(null);
 
-  useEffect(() => {
-    setFieldsValue(data);
-    dataRef.current = data;
-  }, [data]);
+  const { mutate, isLoading } = useMutation((data) => artistAPI.add(data), {
+    onError: () => {
+      message.error('Thêm nghệ sỹ thất bại!');
+    },
 
-  useEffect(() => {
-    setAvatarURL(data.avatarURL);
-    setBannerURL(data.bannerURL);
-  }, [data]);
-
-  const { data: categoryList = [] } = useQuery('category', () => categoryAPI.getAll({ limit: 1000 }), {
-    select: (value) => value?.data,
+    onSuccess: () => {
+      Modal.confirm({
+        icon: <CheckSquareOutlined style={{ color: '#2e7d32' }} />,
+        title: 'Thêm nghệ sỹ thành công!',
+        okText: 'Quay về danh sách',
+        cancelText: 'Tạo mới',
+        onOk() {
+          history.push({
+            pathname: '/artists',
+          });
+          return;
+        },
+        onCancel() {
+          form.resetFields();
+          setAvatarURL(null);
+          setBannerURL(null);
+        },
+      });
+    },
   });
 
-  const handleValuesChange = (changedValues, allValues) => {
-    const changedValue = differentObject(allValues, dataRef.current);
-    if (changedValues.dateOfBirth && moment(changedValues.dateOfBirth).isSame(dataRef.current.dateOfBirth)) {
-      delete changedValue.dateOfBirth;
-    }
-    setChangedData(changedValue);
-  };
-
-  const handleUpdateClick = () => {
-    const payload = { ...changedData };
-    setChangedData({});
+  const handleFinish = async (values) => {
+    const payload = { ...values };
     if (payload.avatarURL) {
       payload.avatarURL = payload.avatarURL.fileList.slice(-1)[0].response.data.path;
     }
-
     if (payload.bannerURL) {
       payload.bannerURL = payload.bannerURL.fileList.slice(-1)[0].response.data.path;
     }
-
-    onUpdate(data._id, payload);
+    mutate(payload);
   };
 
   const beforeUpload = (file) => {
@@ -124,23 +124,16 @@ function ArtistForm({ data = {}, onUpdate }) {
     </div>
   );
 
-  const handleResetForm = () => {
-    setFieldsValue(data);
-    setChangedData({});
-    setAvatarURL(data.avatarURL);
-    setBannerURL(data.bannerURL);
-  };
-
-  const setFieldsValue = (values) => {
-    form.setFieldsValue({ ...values, dateOfBirth: values.dateOfBirth && moment(values.dateOfBirth) });
-  };
-
   return (
-    <Form form={form} onValuesChange={handleValuesChange} onFinish={handleUpdateClick}>
-      <Card title="Chi tiết nghệ sỹ">
-        <Descriptions column={1} bordered className="feature-form artist-form">
+    <Form form={form} onFinish={handleFinish}>
+      <Card title="Thêm nghệ sỹ">
+        <Descriptions column={1} bordered className="feature-form user-form">
           <Descriptions.Item label={requiredLabel('Ảnh đại diện')}>
-            <Form.Item className="mb-0" name="avatarURL">
+            <Form.Item
+              className="mb-0"
+              name="avatarURL"
+              rules={[{ required: true, message: 'Vui lòng chọn ảnh đại diện' }]}
+            >
               <Upload
                 name="image"
                 listType="picture-card"
@@ -160,7 +153,7 @@ function ArtistForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Ảnh bìa')}>
-            <Form.Item className="mb-0" name="bannerURL">
+            <Form.Item className="mb-0" name="bannerURL" rules={[{ required: true, message: 'Vui lòng chọn ảnh bìa' }]}>
               <Upload
                 name="image"
                 listType="picture-card"
@@ -179,45 +172,15 @@ function ArtistForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label="ID">
-            <span>{data._id}</span>
-          </Descriptions.Item>
-
           <Descriptions.Item label={requiredLabel('Tên')}>
-            <Form.Item className="mb-0" name="fullName">
+            <Form.Item className="mb-0" name="fullName" rules={[{ required: true, message: 'Vui lòng nhập tên' }]}>
               <Input placeholder="Tên" />
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Trạng thái')}>
-            <Form.Item
-              className="mb-0"
-              name="isActive"
-              rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
-            >
-              <Select placeholder="Trạng thái">
-                {statuses.map((status) => (
-                  <Select.Option value={status.id}>{status.name}</Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Descriptions.Item>
-
-          <Descriptions.Item label={requiredLabel('Thể loại')}>
-            <Form.Item className="mb-0" name="categoryId">
-              <Select
-                placeholder="Chọn thể loại"
-                showSearch
-                filterOption={(input, option) =>
-                  unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
-                }
-              >
-                {categoryList.map((category) => (
-                  <Select.Option key={category._id} value={category._id}>
-                    {category.name}
-                  </Select.Option>
-                ))}
-              </Select>
+          <Descriptions.Item label={requiredLabel('Mô tả')}>
+            <Form.Item className="mb-0" name="description" rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}>
+              <Input.TextArea placeholder="Mô tả" />
             </Form.Item>
           </Descriptions.Item>
 
@@ -233,36 +196,41 @@ function ArtistForm({ data = {}, onUpdate }) {
                 style={{ display: 'block' }}
                 format="DD/MM/YYYY"
                 allowClear={false}
+                rules={[{ required: true, message: 'Vui lòng chọn ngày sinh' }]}
               />
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label="Thời gian tạo">
-            <span>{formatDate(data.created_at)}</span>
+          <Descriptions.Item label={requiredLabel('Trạng thái')}>
+            <Form.Item
+              className="mb-0"
+              name="isActive"
+              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
+            >
+              <Select placeholder="Trạng thái">
+                {statuses.map((status) => (
+                  <Select.Option value={status.id}>{status.name}</Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label="Thời gian cập nhật">
-            <span>{formatDate(data.updated_at)}</span>
+          <Descriptions.Item>
+            <div className="d-flex justify-content-end">
+              <Button danger className="me-2" disabled={isLoading}>
+                Hủy bỏ
+              </Button>
+              <Button type="primary" htmlType="submit" disabled={isLoading} loading={isLoading}>
+                Thêm
+              </Button>
+            </div>
           </Descriptions.Item>
-
-          {Object.keys(changedData).length > 0 && (
-            <Descriptions.Item>
-              <div className="d-flex justify-content-end">
-                <Button danger className="me-2" onClick={handleResetForm}>
-                  Hủy bỏ
-                </Button>
-                <Button type="primary" htmlType="submit">
-                  Cập nhật
-                </Button>
-              </div>
-            </Descriptions.Item>
-          )}
         </Descriptions>
       </Card>
     </Form>
   );
 }
 
-ArtistForm.propTypes = {};
+ArtistAddForm.propTypes = {};
 
-export default ArtistForm;
+export default ArtistAddForm;

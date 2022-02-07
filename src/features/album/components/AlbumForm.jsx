@@ -251,7 +251,7 @@ function AlbumForm({ data = {}, onUpdate }) {
           {Object.keys(changedData).length > 0 && (
             <Descriptions.Item>
               <div className="d-flex justify-content-end">
-                <Button type="error" className="me-2" onClick={handleResetForm}>
+                <Button danger className="me-2" onClick={handleResetForm}>
                   Hủy bỏ
                 </Button>
                 <Button type="primary" htmlType="submit">

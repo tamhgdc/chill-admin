@@ -1,26 +1,30 @@
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Descriptions, Form, Input, message, Select, Upload } from 'antd';
+import { CheckSquareOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Card, Descriptions, Form, Input, message, Modal, Select, Upload } from 'antd';
 import artistAPI from 'api/artistAPI';
 import categoryAPI from 'api/categoryAPI';
+import songAPI from 'api/songAPI';
 import { IMAGE_API_URL, UPLOAD_SONG_API_URL } from 'config';
 import { statuses } from 'constants';
-import React, { useEffect, useRef, useState } from 'react';
-import { useQuery } from 'react-query';
-import { differentObject, formatDate, requiredLabel, unAccent } from 'utils';
+import React, { useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { useHistory } from 'react-router-dom';
+import { requiredLabel, unAccent } from 'utils';
 
-function SongForm({ data = {}, onUpdate }) {
+function SongAddForm() {
   const [form] = Form.useForm();
-  const dataRef = useRef(null);
-
-  const [changedData, setChangedData] = useState({});
+  const history = useHistory();
   const [imageLoading, setImageLoading] = useState(false);
   const [mediaLoading, setMediaLoading] = useState(false);
   const [imageURL, setImageURL] = useState(null);
   const [mediaURL, setMediaURL] = useState(null);
 
-  const { data: categoryList = [] } = useQuery('categories', () => categoryAPI.getAll({ limit: 1000 }), {
-    select: (value) => value?.data,
-  });
+  const { data: categoryList = [], isLoading: categoryLoading } = useQuery(
+    'categories',
+    () => categoryAPI.getAll({ limit: 1000 }),
+    {
+      select: (value) => value?.data,
+    }
+  );
 
   const { data: artistList = [], isLoading: artistLoading } = useQuery(
     'artists',
@@ -30,24 +34,35 @@ function SongForm({ data = {}, onUpdate }) {
     }
   );
 
-  useEffect(() => {
-    form.setFieldsValue(data);
-    dataRef.current = data;
-  }, [data]);
+  console.log(artistList);
+  const { mutate, isLoading } = useMutation((data) => songAPI.add(data), {
+    onError: () => {
+      message.error('Thêm bài hát thất bại!');
+    },
 
-  useEffect(() => {
-    setImageURL(data.imageURL);
-    setMediaURL(data.mediaURL);
-  }, [data]);
+    onSuccess: () => {
+      Modal.confirm({
+        icon: <CheckSquareOutlined style={{ color: '#2e7d32' }} />,
+        title: 'Thêm bài hát thành công!',
+        okText: 'Quay về danh sách',
+        cancelText: 'Tạo mới',
+        onOk() {
+          history.push({
+            pathname: '/songs',
+          });
+          return;
+        },
+        onCancel() {
+          form.resetFields();
+          setImageURL(null);
+          setMediaURL(null);
+        },
+      });
+    },
+  });
 
-  const handleValuesChange = (changedValues, allValues) => {
-    const changedValue = differentObject(allValues, dataRef.current);
-    setChangedData(changedValue);
-  };
-
-  const handleUpdateClick = () => {
-    const payload = { ...changedData };
-    setChangedData({});
+  const handleFinish = async (values) => {
+    const payload = { ...values };
     if (payload.imageURL) {
       payload.imageURL = payload.imageURL.fileList.slice(-1)[0].response.data.path;
     }
@@ -55,21 +70,7 @@ function SongForm({ data = {}, onUpdate }) {
     if (payload.mediaURL) {
       payload.mediaURL = payload.mediaURL.fileList.slice(-1)[0].response.data.path;
     }
-
-    if (payload.artistIdList) {
-      payload.artistList = payload.artistIdList;
-      delete payload.artistIdList;
-    }
-    console.log(payload);
-
-    onUpdate(data._id, payload);
-  };
-
-  const handleResetForm = () => {
-    form.resetFields();
-    setChangedData({});
-    setImageURL(data.imageURL);
-    setMediaURL(data.mediaURL);
+    mutate(payload);
   };
 
   const uploadButton = (
@@ -143,11 +144,11 @@ function SongForm({ data = {}, onUpdate }) {
   };
 
   return (
-    <Form form={form} initialValues={data} onValuesChange={handleValuesChange} onFinish={handleUpdateClick}>
-      <Card title="Chi tiết bài hát">
-        <Descriptions column={1} bordered className="feature-form song-form">
+    <Form form={form} onFinish={handleFinish}>
+      <Card title="Thêm bài hát">
+        <Descriptions column={1} bordered className="feature-form user-form">
           <Descriptions.Item label={requiredLabel('Hình ảnh')}>
-            <Form.Item className="mb-0" name="imageURL">
+            <Form.Item className="mb-0" name="imageURL" rules={[{ required: true, message: 'Vui lòng chọn hình ảnh' }]}>
               <Upload
                 name="image"
                 listType="picture-card"
@@ -167,7 +168,7 @@ function SongForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Âm thanh')} className="upload-media">
-            <Form.Item className="mb-0" name="mediaURL">
+            <Form.Item className="mb-0" name="mediaURL" rules={[{ required: true, message: 'Vui lòng chọn âm thanh' }]}>
               <Upload
                 name="song"
                 listType="picture-card"
@@ -188,22 +189,14 @@ function SongForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label="ID">
-            <span>{data._id}</span>
-          </Descriptions.Item>
-
           <Descriptions.Item label={requiredLabel('Tên')}>
-            <Form.Item className="mb-0" name="name">
+            <Form.Item className="mb-0" name="name" rules={[{ required: true, message: 'Vui lòng nhập tên' }]}>
               <Input placeholder="Tên" />
             </Form.Item>
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Nghệ sỹ')}>
-            <Form.Item
-              className="mb-0"
-              name="artistIdList"
-              rules={[{ required: true, message: 'Vui lòng chọn nghệ sỹ' }]}
-            >
+            <Form.Item className="mb-0" name="artistList" rules={[{ required: true, message: 'Vui lòng chọn nghệ sỹ' }]}>
               <Select
                 mode="multiple"
                 placeholder="Chọn nghệ sỹ"
@@ -223,10 +216,15 @@ function SongForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Thể loại')}>
-            <Form.Item className="mb-0" name="categoryId">
+            <Form.Item
+              className="mb-0"
+              name="categoryId"
+              rules={[{ required: true, message: 'Vui lòng chọn thể loại' }]}
+            >
               <Select
                 placeholder="Chọn thể loại"
                 showSearch
+                loading={categoryLoading}
                 filterOption={(input, option) =>
                   unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
                 }
@@ -244,7 +242,7 @@ function SongForm({ data = {}, onUpdate }) {
             <Form.Item
               className="mb-0"
               name="isActive"
-              rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
             >
               <Select placeholder="Trạng thái">
                 {statuses.map((status) => (
@@ -254,40 +252,22 @@ function SongForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label="Lượt nghe">
-            <span>{data.view}</span>
+          <Descriptions.Item>
+            <div className="d-flex justify-content-end">
+              <Button danger className="me-2" disabled={isLoading}>
+                Hủy bỏ
+              </Button>
+              <Button type="primary" htmlType="submit" disabled={isLoading} loading={isLoading}>
+                Thêm
+              </Button>
+            </div>
           </Descriptions.Item>
-
-          <Descriptions.Item label="ID người tạo">
-            <span>{data.userID}</span>
-          </Descriptions.Item>
-
-          <Descriptions.Item label="Thời gian tạo">
-            <span>{formatDate(data.created_at)}</span>
-          </Descriptions.Item>
-
-          <Descriptions.Item label="Thời gian cập nhật">
-            <span>{formatDate(data.updated_at)}</span>
-          </Descriptions.Item>
-
-          {Object.keys(changedData).length > 0 && (
-            <Descriptions.Item>
-              <div className="d-flex justify-content-end">
-                <Button danger className="me-2" onClick={handleResetForm}>
-                  Hủy bỏ
-                </Button>
-                <Button type="primary" htmlType="submit">
-                  Cập nhật
-                </Button>
-              </div>
-            </Descriptions.Item>
-          )}
         </Descriptions>
       </Card>
     </Form>
   );
 }
 
-SongForm.propTypes = {};
+SongAddForm.propTypes = {};
 
-export default SongForm;
+export default SongAddForm;

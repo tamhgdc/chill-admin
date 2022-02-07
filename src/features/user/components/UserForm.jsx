@@ -1,7 +1,7 @@
-import { Button, Card, Descriptions, Form, Input, message, Select, Upload } from 'antd';
+import { Button, Card, DatePicker, Descriptions, Form, Input, message, Select, Upload } from 'antd';
 import { IMAGE_API_URL } from 'config';
 import { genderList, roleList, statuses } from 'constants';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { differentObject, formatDate, requiredLabel } from 'utils';
@@ -10,39 +10,39 @@ function UserForm({ data = {}, onUpdate }) {
   const [form] = Form.useForm();
   const dataRef = useRef(null);
   const [changedData, setChangedData] = useState({});
-  const [avatarLoading, setAvatarLoading] = useState(false)
-  const [avatarURL, setAvatarURL] = useState(null)
+  const [avatarLoading, setAvatarLoading] = useState(false);
+  const [avatarURL, setAvatarURL] = useState(null);
 
   useEffect(() => {
-    form.setFieldsValue(data);
+    setFieldsValue(data);
     dataRef.current = data;
   }, [data]);
 
   useEffect(() => {
-    setAvatarURL(data.avatarURL)
-  }, [data])
+    setAvatarURL(data.avatarURL);
+  }, [data]);
 
   const handleValuesChange = (changedValues, allValues) => {
     const changedValue = differentObject(allValues, dataRef.current);
     if (changedValues.dateOfBirth && moment(changedValues.dateOfBirth).isSame(dataRef.current.dateOfBirth)) {
-      delete changedValue.dateOfBirth
+      delete changedValue.dateOfBirth;
     }
     setChangedData(changedValue);
   };
 
   const handleUpdateClick = () => {
-    const payload = { ...changedData }
+    const payload = { ...changedData };
     setChangedData({});
     if (payload.avatarURL) {
-      payload.avatarURL = payload.avatarURL.fileList.slice(-1)[0].response.data.path
+      payload.avatarURL = payload.avatarURL.fileList.slice(-1)[0].response.data.path;
     }
     onUpdate(data._id, payload);
   };
 
   const handleResetForm = () => {
-    form.resetFields();
+    setFieldsValue(data);
     setChangedData({});
-    setAvatarURL(data.avatarURL)
+    setAvatarURL(data.avatarURL);
   };
 
   const uploadButton = (
@@ -50,39 +50,42 @@ function UserForm({ data = {}, onUpdate }) {
       {avatarLoading ? <LoadingOutlined /> : <PlusOutlined />}
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
-  )
-
+  );
 
   const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
     if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG file!')
+      message.error('You can only upload JPG/PNG file!');
     }
 
-    const isLt2M = file.size / 1024 / 1024 < 2
+    const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      message.error('Image must smaller than 2MB!')
+      message.error('Image must smaller than 2MB!');
     }
 
-    return isJpgOrPng && isLt2M
-  }
+    return isJpgOrPng && isLt2M;
+  };
 
   const handleChange = (info) => {
     if (info.file.status === 'uploading') {
-      setAvatarLoading(true)
-      return
+      setAvatarLoading(true);
+      return;
     }
 
     if (info.file.status === 'done') {
       // Get this url from response in real world.
-      const avatarURL = info.file?.response?.data?.path
-      setAvatarURL(avatarURL)
-      setAvatarLoading(false)
+      const avatarURL = info.file?.response?.data?.path;
+      setAvatarURL(avatarURL);
+      setAvatarLoading(false);
     }
-  }
+  };
+
+  const setFieldsValue = (values) => {
+    form.setFieldsValue({ ...values, dateOfBirth: values.dateOfBirth && moment(values.dateOfBirth) });
+  };
 
   return (
-    <Form form={form} initialValues={data} onValuesChange={handleValuesChange} onFinish={handleUpdateClick}>
+    <Form form={form} onValuesChange={handleValuesChange} onFinish={handleUpdateClick}>
       <Card title="Chi tiết người dùng">
         <Descriptions column={1} bordered className="feature-form user-form">
           <Descriptions.Item label={requiredLabel('Ảnh đại diện')}>
@@ -96,7 +99,11 @@ function UserForm({ data = {}, onUpdate }) {
                 beforeUpload={beforeUpload}
                 onChange={handleChange}
               >
-                {(avatarURL && !avatarLoading) ? <img src={avatarURL} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                {avatarURL && !avatarLoading ? (
+                  <img src={avatarURL} alt="avatar" style={{ width: '100%' }} />
+                ) : (
+                  uploadButton
+                )}
               </Upload>
             </Form.Item>
           </Descriptions.Item>
@@ -153,6 +160,22 @@ function UserForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
+          <Descriptions.Item label={requiredLabel('Ngày sinh')}>
+            <Form.Item name="dateOfBirth" className="mb-0">
+              <DatePicker
+                disabledDate={(value) => {
+                  if (value.valueOf() > moment().valueOf()) {
+                    return true;
+                  }
+                }}
+                placeholder="Ngày sinh"
+                style={{ display: 'block' }}
+                format="DD/MM/YYYY"
+                allowClear={false}
+              />
+            </Form.Item>
+          </Descriptions.Item>
+
           <Descriptions.Item label="Thời gian tạo">
             <span>{formatDate(data.created_at)}</span>
           </Descriptions.Item>
@@ -164,7 +187,7 @@ function UserForm({ data = {}, onUpdate }) {
           {Object.keys(changedData).length > 0 && (
             <Descriptions.Item>
               <div className="d-flex justify-content-end">
-                <Button type="error" className="me-2" onClick={handleResetForm}>
+                <Button danger className="me-2" onClick={handleResetForm}>
                   Hủy bỏ
                 </Button>
                 <Button type="primary" htmlType="submit">
