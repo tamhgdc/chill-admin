@@ -11,12 +11,17 @@ const albumAPI = {
     return axiosClient.get(url);
   },
 
+  getDetail(id) {
+    const url = `/albums/detail/${id}`;
+    return axiosClient.get(url);
+  },
+
   add(data) {
     const url = '/albums';
     return axiosClient.post(url, data);
   },
 
-  update(data, id) {
+  update(id, data) {
     const url = `/albums/${id}`;
     return axiosClient.patch(url, data);
   },

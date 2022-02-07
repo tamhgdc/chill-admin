@@ -12,7 +12,7 @@ import ArtistTable from '../components/ArtistTable';
 
 const defaultPagination = {
   page: 1,
-  perPage: 10,
+  limit: 10,
 };
 
 const breadcrumb = [{ path: '', active: true, name: 'Nghệ sỹ' }];
@@ -23,7 +23,7 @@ function ListPage(props) {
 
   const queryParams = useMemo(() => {
     const params = queryString.parse(location.search);
-    const { code, type, status, created_from, created_to, used_from, used_to, perPage, page } = params;
+    const { code, type, status, created_from, created_to, used_from, used_to, limit, page } = params;
     return {
       ...params,
       code: code ? code : undefined,
@@ -33,13 +33,13 @@ function ListPage(props) {
       created_to: created_to ? moment(created_to) : undefined,
       used_from: used_from ? moment(used_from) : undefined,
       used_to: used_to ? moment(used_to) : undefined,
-      perPage: perPage ? Number(perPage) : defaultPagination.perPage,
+      limit: limit ? Number(limit) : defaultPagination.limit,
       page: page ? Number(page) : defaultPagination.page,
     };
   }, [location.search]);
 
   const handlePageChange = ({ current, pageSize }) => {
-    handleFilterChange({ perPage: pageSize, page: current });
+    handleFilterChange({ limit: pageSize, page: current });
   };
 
   const handleFilterChange = (newFilter) => {
@@ -77,10 +77,11 @@ function ListPage(props) {
   };
 
   const { data = {}, isLoading, isError } = useQuery(['artists', queryParams], () => artistAPI.getAll(queryParams));
+
   const pagination = {
     page: queryParams.page,
-    perPage: queryParams.perPage,
-    total: data.total,
+    limit: queryParams.limit,
+    total: data.pagination?.count,
   };
   
   // if (isError) {

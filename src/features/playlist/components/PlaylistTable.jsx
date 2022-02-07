@@ -1,6 +1,7 @@
 import { EyeOutlined, PlusOutlined } from '@ant-design/icons/';
 import { Button, Card, Empty, Table, Tag } from 'antd';
-import { findById, statuses } from 'constants';
+import { statuses } from 'constants';
+import { findInArr } from 'utils';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -9,15 +10,21 @@ function PlaylistTable({ list, isLoading, pagination, onPageChange }) {
   const history = useHistory()
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      width: 60,
+      title: 'Tên',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Lượt nghe',
+      dataIndex: 'view',
+      key: 'view',
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'status',
+      dataIndex: 'isActive',
+      key: 'isActive',
       render: (value) => {
-        const status = findById(value, statuses);
+        const status = findInArr(statuses, value);
         return <Tag color={status.color}>{status.name}</Tag>;
       },
     },
@@ -30,7 +37,7 @@ function PlaylistTable({ list, isLoading, pagination, onPageChange }) {
         return (
           <Link
             to={{
-              pathname: `/members/${value.id}`,
+              pathname: `/playlists/${value._id}`,
             }}
           >
             <Button type="primary" icon={<EyeOutlined />} />
@@ -58,7 +65,7 @@ function PlaylistTable({ list, isLoading, pagination, onPageChange }) {
         onChange={onPageChange}
         pagination={{
           total: pagination.total,
-          pageSize: pagination.perPage,
+          pageSize: pagination.limit,
           current: pagination.page,
           position: ['topRight', 'bottomRight'],
           showTotal: (total, range) => `${total} playlist | Từ ${range[0]} đến ${range[1]}`,

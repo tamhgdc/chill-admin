@@ -20,7 +20,7 @@ function DetailPage(props) {
     { path: '', active: false, name: 'Chi tiết playlist' },
   ];
 
-  const { data = {}, isLoading: getLoading, isError } = useQuery(['playlist', id], () => playlistAPI.getById(id));
+  const { data = {}, isLoading: getLoading, isError } = useQuery(['playlist', id], () => playlistAPI.getDetail(id));
 
   const { mutate, isLoading: updateLoading } = useMutation(({ id, data }) => playlistAPI.update(id, data), {
     onError: () => {
@@ -47,7 +47,7 @@ function DetailPage(props) {
       {!getLoading && (
         <div className="content-padding">
           <PlaylistForm
-            data={data}
+            data={data.data}
             updateLoading={updateLoading}
             onUpdate={handleUpdate}
           />

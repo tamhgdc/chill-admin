@@ -97,3 +97,9 @@ export const formatDate = (string) => {
 
   return 'Chưa xác định';
 };
+
+
+export const renderArtistFromList = (artistList) => {
+  if(!Array.isArray(artistList) || artistList.length === 0) return ''
+  return `[${artistList.map(artist => artist.fullName).join(', ')}]`
+}

@@ -1,23 +1,40 @@
 import { EyeOutlined, PlusOutlined } from '@ant-design/icons/';
 import { Button, Card, Empty, Table, Tag } from 'antd';
-import { findById, statuses } from 'constants';
+import { statuses } from 'constants';
+import { findInArr, formatDate } from 'utils';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { genderList } from 'constants';
 
 function ArtistTable({ list, isLoading, pagination, onPageChange }) {
   const history = useHistory()
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      width: 60,
+      title: 'Họ và tên',
+      dataIndex: 'fullName',
+      key: 'fullName',
+    },
+    {
+      title: 'Giới tính',
+      dataIndex: 'gender',
+      key: 'gender',
+      render: (value) => findInArr(genderList, value, 'name'),
+    },
+    {
+      title: 'Ngày sinh',
+      dataIndex: 'dateOfBirth',
+      key: 'dateOfBirth',
+      render: (value) => {
+        return formatDate(value);
+      },
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'status',
+      dataIndex: 'isActive',
+      key: 'isActive',
       render: (value) => {
-        const status = findById(value, statuses);
+        const status = findInArr(statuses, value);
         return <Tag color={status.color}>{status.name}</Tag>;
       },
     },
@@ -30,7 +47,7 @@ function ArtistTable({ list, isLoading, pagination, onPageChange }) {
         return (
           <Link
             to={{
-              pathname: `/members/${value.id}`,
+              pathname: `/artists/${value._id}`,
             }}
           >
             <Button type="primary" icon={<EyeOutlined />} />
@@ -58,7 +75,7 @@ function ArtistTable({ list, isLoading, pagination, onPageChange }) {
         onChange={onPageChange}
         pagination={{
           total: pagination.total,
-          pageSize: pagination.perPage,
+          pageSize: pagination.limit,
           current: pagination.page,
           position: ['topRight', 'bottomRight'],
           showTotal: (total, range) => `${total} nghệ sỹ | Từ ${range[0]} đến ${range[1]}`,

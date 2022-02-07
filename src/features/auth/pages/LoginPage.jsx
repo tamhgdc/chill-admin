@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import { useHistory } from 'react-router';
 import { login } from '../../auth/authSlice';
 import { ACCESS_TOKEN } from 'constants';
+import { StorageKeys } from 'constants';
 
 function Login(props) {
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ function Login(props) {
     console.log('Failed:', errorInfo);
   };
 
-  if (Boolean(localStorage.getItem(ACCESS_TOKEN))) {
+  if (Boolean(localStorage.getItem(StorageKeys.ACCESS_TOKEN))) {
     return <Redirect to="/" />;
   }
 

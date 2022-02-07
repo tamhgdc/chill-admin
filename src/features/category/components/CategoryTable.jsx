@@ -1,6 +1,7 @@
 import { EyeOutlined, PlusOutlined } from '@ant-design/icons/';
 import { Button, Card, Empty, Table, Tag } from 'antd';
-import { findById, statuses } from 'constants';
+import { statuses } from 'constants';
+import { findInArr, formatDate } from 'utils';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -9,16 +10,32 @@ function CategoryTable({ list, isLoading, pagination, onPageChange }) {
   const history = useHistory()
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      width: 60,
+      title: 'Tên',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'status',
+      dataIndex: 'isActive',
       render: (value) => {
-        const status = findById(value, statuses);
+        const status = findInArr(statuses, value);
         return <Tag color={status.color}>{status.name}</Tag>;
+      },
+    },
+    {
+      title: 'Ngày cập nhật',
+      dataIndex: 'updated_at',
+      key: 'updated_at',
+      render: (value) => {
+        return formatDate(value);
+      },
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      render: (value) => {
+        return formatDate(value);
       },
     },
     {
@@ -30,7 +47,7 @@ function CategoryTable({ list, isLoading, pagination, onPageChange }) {
         return (
           <Link
             to={{
-              pathname: `/members/${value.id}`,
+              pathname: `/categories/${value._id}`,
             }}
           >
             <Button type="primary" icon={<EyeOutlined />} />
@@ -44,7 +61,7 @@ function CategoryTable({ list, isLoading, pagination, onPageChange }) {
     <Card
       title="Danh sách thể loại"
       extra={
-        <Button icon={<PlusOutlined />} type="primary" onClick={() => history.push('/categorys/add')}>
+        <Button icon={<PlusOutlined />} type="primary" onClick={() => history.push('/categories/add')}>
           Thêm thể loại
         </Button>
       }
@@ -58,7 +75,7 @@ function CategoryTable({ list, isLoading, pagination, onPageChange }) {
         onChange={onPageChange}
         pagination={{
           total: pagination.total,
-          pageSize: pagination.perPage,
+          pageSize: pagination.limit,
           current: pagination.page,
           position: ['topRight', 'bottomRight'],
           showTotal: (total, range) => `${total} thể loại | Từ ${range[0]} đến ${range[1]}`,

@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import userApi from 'api/userAPI';
-import { USER, ACCESS_TOKEN} from 'constants';
+import { StorageKeys } from 'constants';
 
 export const register = createAsyncThunk('user/register', async (payload) => {
   const data = await userApi.register(payload);
 
   // save data to local storage
-  localStorage.setItem(ACCESS_TOKEN, data.jwt);
-  localStorage.setItem(USER, JSON.stringify(data.user));
+  localStorage.setItem(StorageKeys.ACCESS_TOKEN, data.jwt);
+  localStorage.setItem(StorageKeys.USER, JSON.stringify(data.user));
 
   return data.user;
 });
@@ -16,8 +16,8 @@ export const login = createAsyncThunk('user/login', async (payload) => {
   const data = await userApi.login(payload);
 
   // save data to local storage
-  localStorage.setItem(ACCESS_TOKEN, data.jwt);
-  localStorage.setItem(USER, JSON.stringify(data.user));
+  localStorage.setItem(StorageKeys.ACCESS_TOKEN, data.jwt);
+  localStorage.setItem(StorageKeys.USER, JSON.stringify(data.user));
 
   return data.user;
 });
@@ -25,14 +25,14 @@ export const login = createAsyncThunk('user/login', async (payload) => {
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    current: JSON.parse(localStorage.getItem(USER)) || {},
+    current: JSON.parse(localStorage.getItem(StorageKeys.USER)) || {},
     settings: {},
   },
   reducers: {
     logout(state) {
       // clear local storage
-      localStorage.removeItem(USER);
-      localStorage.removeItem(ACCESS_TOKEN);
+      localStorage.removeItem(StorageKeys.USER);
+      localStorage.removeItem(StorageKeys.ACCESS_TOKEN);
 
       state.current = {};
     },

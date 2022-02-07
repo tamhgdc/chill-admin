@@ -1,24 +1,71 @@
 import { EyeOutlined, PlusOutlined } from '@ant-design/icons/';
 import { Button, Card, Empty, Table, Tag } from 'antd';
-import { findById, statuses } from 'constants';
+import { statuses } from 'constants';
+import { findInArr, formatDate } from 'utils';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { genderList } from 'constants';
+import { roleList } from 'constants';
 
 function UserTable({ list, isLoading, pagination, onPageChange }) {
-  const history = useHistory()
+  const history = useHistory();
   const columns = [
+    // {
+    //   title: 'ID',
+    //   dataIndex: 'id',
+    //   width: 60,
+    //   key: 'id',
+    // },
     {
-      title: 'ID',
-      dataIndex: 'id',
-      width: 60,
+      title: 'Họ và tên',
+      dataIndex: 'fullName',
+      key: 'fullName',
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
+      title: 'Giới tính',
+      dataIndex: 'gender',
+      key: 'gender',
+      render: (value) => {
+        return findInArr(genderList, value, 'name');
+      },
+    },
+    {
+      title: 'Ngày sinh',
+      dataIndex: 'dateOfBirth',
+      key: 'dateOfBirth',
+      render: (value) => {
+        return formatDate(value);
+      },
+    },
+    {
+      title: 'Loại người dùng',
+      dataIndex: 'role',
+      key: 'role',
+      render: (value) => {
+        return findInArr(roleList, value, 'name');
+      },
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'status',
+      dataIndex: 'isActive',
+      key: 'isActive',
       render: (value) => {
-        const status = findById(value, statuses);
+        const status = findInArr(statuses, value);
         return <Tag color={status.color}>{status.name}</Tag>;
+      },
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      render: (value) => {
+        return formatDate(value);
       },
     },
     {
@@ -30,7 +77,7 @@ function UserTable({ list, isLoading, pagination, onPageChange }) {
         return (
           <Link
             to={{
-              pathname: `/members/${value.id}`,
+              pathname: `/users/${value._id}`,
             }}
           >
             <Button type="primary" icon={<EyeOutlined />} />
@@ -58,7 +105,7 @@ function UserTable({ list, isLoading, pagination, onPageChange }) {
         onChange={onPageChange}
         pagination={{
           total: pagination.total,
-          pageSize: pagination.perPage,
+          pageSize: pagination.limit,
           current: pagination.page,
           position: ['topRight', 'bottomRight'],
           showTotal: (total, range) => `${total} người dùng | Từ ${range[0]} đến ${range[1]}`,

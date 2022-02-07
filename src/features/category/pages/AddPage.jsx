@@ -11,7 +11,7 @@ function AddPage(props) {
   const history = useHistory()
 
   const breadcrumb = [
-    { path: '/categorys', name: 'Thể loại' },
+    { path: '/categories', name: 'Thể loại' },
     { path: '', active: false, name: 'Thêm thể loại' },
   ]
 
@@ -28,7 +28,7 @@ function AddPage(props) {
         cancelText: 'Tạo mới',
         onOk() {
           history.push({
-            pathname: '/categorys',
+            pathname: '/categories',
           })
           return
         },

@@ -1,23 +1,40 @@
 import { EyeOutlined, PlusOutlined } from '@ant-design/icons/';
 import { Button, Card, Empty, Table, Tag } from 'antd';
-import { findById, statuses } from 'constants';
+import { statuses } from 'constants';
+import { findInArr } from 'utils';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 function AlbumTable({ list, isLoading, pagination, onPageChange }) {
-  const history = useHistory()
+  const history = useHistory();
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      width: 60,
+      title: 'Tên',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Ca sỹ',
+      dataIndex: 'artist',
+      key: 'artist',
+      render: (value) => <Link to={`/artists/${value._id}`}>{value.fullName}</Link>,
+    },
+    {
+      title: 'Thể loại',
+      dataIndex: ['category', 'name'],
+      key: 'category',
+    },
+    {
+      title: 'Lượt nghe',
+      dataIndex: 'view',
+      key: 'view',
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'status',
+      dataIndex: 'isActive',
       render: (value) => {
-        const status = findById(value, statuses);
+        const status = findInArr(statuses, value);
         return <Tag color={status.color}>{status.name}</Tag>;
       },
     },
@@ -30,7 +47,7 @@ function AlbumTable({ list, isLoading, pagination, onPageChange }) {
         return (
           <Link
             to={{
-              pathname: `/albums/${value.id}`,
+              pathname: `/albums/${value._id}`,
             }}
           >
             <Button type="primary" icon={<EyeOutlined />} />
@@ -58,7 +75,7 @@ function AlbumTable({ list, isLoading, pagination, onPageChange }) {
         onChange={onPageChange}
         pagination={{
           total: pagination.total,
-          pageSize: pagination.perPage,
+          pageSize: pagination.limit,
           current: pagination.page,
           position: ['topRight', 'bottomRight'],
           showTotal: (total, range) => `${total} album | Từ ${range[0]} đến ${range[1]}`,

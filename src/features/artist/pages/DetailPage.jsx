@@ -20,7 +20,7 @@ function DetailPage(props) {
     { path: '', active: false, name: 'Chi tiết nghệ sỹ' },
   ];
 
-  const { data = {}, isLoading: getLoading, isError } = useQuery(['artist', id], () => artistAPI.getById(id));
+  const { data = {}, isLoading: getLoading, isError } = useQuery(['artist', id], () => artistAPI.get(id));
 
   const { mutate, isLoading: updateLoading } = useMutation(({ id, data }) => artistAPI.update(id, data), {
     onError: () => {
@@ -47,7 +47,7 @@ function DetailPage(props) {
       {!getLoading && (
         <div className="content-padding">
           <ArtistForm
-            data={data}
+            data={data.data}
             updateLoading={updateLoading}
             onUpdate={handleUpdate}
           />

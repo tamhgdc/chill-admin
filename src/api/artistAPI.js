@@ -16,7 +16,7 @@ const artistAPI = {
     return axiosClient.post(url, data);
   },
 
-  update(data, id) {
+  update(id, data) {
     const url = `/artists/${id}`;
     return axiosClient.patch(url, data);
   },

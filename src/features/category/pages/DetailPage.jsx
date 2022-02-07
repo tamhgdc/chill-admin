@@ -16,11 +16,11 @@ function DetailPage(props) {
   const queryClient = useQueryClient();
 
   const breadcrumb = [
-    { path: '/categorys', name: 'Thể loại' },
+    { path: '/categories', name: 'Thể loại' },
     { path: '', active: false, name: 'Chi tiết thể loại' },
   ];
 
-  const { data = {}, isLoading: getLoading, isError } = useQuery(['category', id], () => categoryAPI.getById(id));
+  const { data = {}, isLoading: getLoading, isError } = useQuery(['category', id], () => categoryAPI.get(id));
 
   const { mutate, isLoading: updateLoading } = useMutation(({ id, data }) => categoryAPI.update(id, data), {
     onError: () => {
@@ -47,7 +47,7 @@ function DetailPage(props) {
       {!getLoading && (
         <div className="content-padding">
           <CategoryForm
-            data={data}
+            data={data.data}
             updateLoading={updateLoading}
             onUpdate={handleUpdate}
           />

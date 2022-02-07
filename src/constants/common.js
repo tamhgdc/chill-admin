@@ -1,15 +1,33 @@
 export const statuses = [
-  { id: 1, name: 'Kích hoạt', color: '' },
-  { id: -2, name: 'Chưa kích hoạt', color: '' },
+  { id: true, name: 'Đã kích hoạt', color: '#4caf50' },
+  { id: false, name: 'Chưa kích hoạt', color: '#ef5350' },
 ];
 
-export const findById = (id, array) => {
-  if (!Array.isArray(array)) return;
-  const result = array.find((item) => item.id === id);
-  if (!result) return {};
-  return result;
-};
+export const roleList = [
+  {
+    id: 0,
+    name: 'Người dùng',
+  },
+  {
+    id: 2,
+    name: 'Admin',
+  },
+]
+
+export const genderList = [
+  {
+    id: 1,
+    name: 'Nữ',
+  },
+  {
+    id: 2,
+    name: 'Nam',
+  },
+]
 
 
-export const ACCESS_TOKEN = 'ACCESS_TOKEN'
-export const USER = 'USER'
+export const StorageKeys = {
+  USER: 'user',
+  ACCESS_TOKEN: 'access_token',
+}
+

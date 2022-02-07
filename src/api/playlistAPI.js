@@ -11,12 +11,17 @@ const playlistAPI = {
     return axiosClient.get(url);
   },
 
+  getDetail(id) {
+    const url = `/playlists/detail/${id}`;
+    return axiosClient.get(url);
+  },
+
   add(data) {
     const url = '/playlists';
     return axiosClient.post(url, data);
   },
 
-  update(data, id) {
+  update(id, data) {
     const url = `/playlists/${id}`;
     return axiosClient.patch(url, data);
   },

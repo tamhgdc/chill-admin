@@ -1,8 +1,12 @@
+import { Spin } from 'antd';
 import React from 'react';
-import PropTypes from 'prop-types';
 
 function Loading(props) {
-  return <div></div>;
+  return (
+    <div className="primary-loading">
+      <Spin size="large" tip="Đang tải" />
+    </div>
+  );
 }
 
 Loading.propTypes = {};

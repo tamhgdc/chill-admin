@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import userAPI from 'api/userAPI';
+import albumAPI from 'api/albumAPI';
 import Breadcrumb from 'components/Breadcrumb';
 import Error from 'components/Error';
 import Loading from 'components/Loading';
@@ -20,9 +20,9 @@ function DetailPage(props) {
     { path: '', active: false, name: 'Chi tiết album' },
   ];
 
-  const { data = {}, isLoading: getLoading, isError } = useQuery(['album', id], () => userAPI.getById(id));
+  const { data = {}, isLoading: getLoading, isError } = useQuery(['album', id], () => albumAPI.getDetail(id));
 
-  const { mutate, isLoading: updateLoading } = useMutation(({ id, data }) => userAPI.update(id, data), {
+  const { mutate, isLoading: updateLoading } = useMutation(({ id, data }) => albumAPI.update(id, data), {
     onError: () => {
       message.error('Cập nhật album thất bại!');
     },
@@ -47,7 +47,7 @@ function DetailPage(props) {
       {!getLoading && (
         <div className="content-padding">
           <AlbumForm
-            data={data}
+            data={data.data}
             updateLoading={updateLoading}
             onUpdate={handleUpdate}
           />

@@ -6,6 +6,11 @@ const songAPI = {
     return axiosClient.get(url, { params });
   },
 
+  getAllByArtist(artistId) {
+    const url = `/songs/from-artist/${artistId}`;
+    return axiosClient.get(url);
+  },
+
   get(id) {
     const url = `/songs/${id}`;
     return axiosClient.get(url);
@@ -16,7 +21,7 @@ const songAPI = {
     return axiosClient.post(url, data);
   },
 
-  update(data, id) {
+  update(id, data) {
     const url = `/songs/${id}`;
     return axiosClient.patch(url, data);
   },

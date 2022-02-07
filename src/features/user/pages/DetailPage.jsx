@@ -20,7 +20,7 @@ function DetailPage(props) {
     { path: '', active: false, name: 'Chi tiết người dùng' },
   ];
 
-  const { data = {}, isLoading: getLoading, isError } = useQuery(['user', id], () => userAPI.getById(id));
+  const { data = {}, isLoading: getLoading, isError } = useQuery(['user', id], () => userAPI.get(id));
 
   const { mutate, isLoading: updateLoading } = useMutation(({ id, data }) => userAPI.update(id, data), {
     onError: () => {
@@ -47,7 +47,7 @@ function DetailPage(props) {
       {!getLoading && (
         <div className="content-padding">
           <UserForm
-            data={data}
+            data={data.data}
             updateLoading={updateLoading}
             onUpdate={handleUpdate}
           />

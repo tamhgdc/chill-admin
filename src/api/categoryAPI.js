@@ -16,7 +16,7 @@ const categoryAPI = {
     return axiosClient.post(url, data);
   },
 
-  update(data, id) {
+  update(id, data) {
     const url = `/categories/${id}`;
     return axiosClient.patch(url, data);
   },
