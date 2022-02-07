@@ -19,7 +19,7 @@ function ArtistForm({ data = {}, onUpdate }) {
   const [bannerURL, setBannerURL] = useState(null);
 
   useEffect(() => {
-    setFieldsValue(data)
+    setFieldsValue(data);
     dataRef.current = data;
   }, [data]);
 
@@ -35,7 +35,7 @@ function ArtistForm({ data = {}, onUpdate }) {
   const handleValuesChange = (changedValues, allValues) => {
     const changedValue = differentObject(allValues, dataRef.current);
     if (changedValues.dateOfBirth && moment(changedValues.dateOfBirth).isSame(dataRef.current.dateOfBirth)) {
-      delete changedValue.dateOfBirth
+      delete changedValue.dateOfBirth;
     }
     setChangedData(changedValue);
   };
@@ -125,15 +125,17 @@ function ArtistForm({ data = {}, onUpdate }) {
   );
 
   const handleResetForm = () => {
-    setFieldsValue(data)
-    setChangedData({})
+    setFieldsValue(data);
+    setChangedData({});
     setAvatarURL(data.avatarURL);
     setBannerURL(data.bannerURL);
-  }
+  };
+
+  console.log(moment(undefined));
 
   const setFieldsValue = (values) => {
-    form.setFieldsValue({ ...values, dateOfBirth: moment(values.dateOfBirth) })
-  }
+    form.setFieldsValue({ ...values, dateOfBirth: values.dateOfBirth && moment(values.dateOfBirth) });
+  };
 
   return (
     <Form form={form} onValuesChange={handleValuesChange} onFinish={handleUpdateClick}>
@@ -226,7 +228,7 @@ function ArtistForm({ data = {}, onUpdate }) {
               <DatePicker
                 disabledDate={(value) => {
                   if (value.valueOf() > moment().valueOf()) {
-                    return true
+                    return true;
                   }
                 }}
                 placeholder="Ngày sinh"
