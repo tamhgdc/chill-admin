@@ -68,3 +68,7 @@ a {
 .feature-form .ant-descriptions-item-label {
   width: 30%;
 }
+
+.mt-30 {
+  margin-top: 30px;
+}

@@ -10,7 +10,7 @@ import { Layout, Menu } from 'antd';
 import NotFound from 'components/NotFound';
 import _ from 'lodash';
 import React, { lazy, Suspense, useState } from 'react';
-import { Link, Route, Switch, useLocation } from 'react-router-dom';
+import { Link, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import logo from 'assets/images/logo.png';
 import Footer from './Footer';
 import Header from './Header';
@@ -22,7 +22,7 @@ const AlbumFeature = lazy(() => import('features/album'));
 const PlaylistFeature = lazy(() => import('features/playlist'));
 const ArtistFeature = lazy(() => import('features/artist'));
 const CategoryFeature = lazy(() => import('features/category'));
-
+const DashboardFeature = lazy(() => import('features/dashboard'));
 
 const { Header: LayoutHeader, Sider, Content, Footer: LayoutFooter } = Layout;
 
@@ -92,6 +92,8 @@ export default function DefaultLayout() {
           <div className="site-layout-content">
             <Suspense fallback={<Loading />}>
               <Switch>
+                <Redirect from="/" to="/dashboard" exact />
+                <Route path="/dashboard" component={DashboardFeature} />
                 <Route path="/songs" component={SongFeature} />
                 <Route path="/users" component={UserFeature} />
                 <Route path="/artists" component={ArtistFeature} />
