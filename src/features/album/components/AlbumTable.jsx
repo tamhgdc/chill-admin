@@ -28,11 +28,13 @@ function AlbumTable({ list, isLoading, pagination, onPageChange }) {
     {
       title: 'Lượt nghe',
       dataIndex: 'view',
+      width: 150,
       key: 'view',
     },
     {
       title: 'Trạng thái',
       dataIndex: 'isActive',
+      width: 150,
       render: (value) => {
         const status = findInArr(statuses, value);
         return <Tag color={status.color}>{status.name}</Tag>;

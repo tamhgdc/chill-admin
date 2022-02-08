@@ -11,12 +11,6 @@ import { roleList } from 'constants';
 function UserTable({ list, isLoading, pagination, onPageChange }) {
   const history = useHistory();
   const columns = [
-    // {
-    //   title: 'ID',
-    //   dataIndex: 'id',
-    //   width: 60,
-    //   key: 'id',
-    // },
     {
       title: 'Họ và tên',
       dataIndex: 'fullName',
@@ -28,22 +22,6 @@ function UserTable({ list, isLoading, pagination, onPageChange }) {
       key: 'email',
     },
     {
-      title: 'Giới tính',
-      dataIndex: 'gender',
-      key: 'gender',
-      render: (value) => {
-        return findInArr(genderList, value, 'name');
-      },
-    },
-    {
-      title: 'Ngày sinh',
-      dataIndex: 'dateOfBirth',
-      key: 'dateOfBirth',
-      render: (value) => {
-        return formatDate(value);
-      },
-    },
-    {
       title: 'Loại người dùng',
       dataIndex: 'role',
       key: 'role',
@@ -52,20 +30,36 @@ function UserTable({ list, isLoading, pagination, onPageChange }) {
       },
     },
     {
-      title: 'Trạng thái',
-      dataIndex: 'isActive',
-      key: 'isActive',
+      title: 'Giới tính',
+      dataIndex: 'gender',
+      width: 150,
+      key: 'gender',
       render: (value) => {
-        const status = findInArr(statuses, value);
-        return <Tag color={status.color}>{status.name}</Tag>;
+        return findInArr(genderList, value, 'name');
       },
+    },
+    {
+      title: 'Ngày sinh',
+      dataIndex: 'dateOfBirth',
+      width: 150,
+      key: 'dateOfBirth',
+      render: (value) => formatDate(value),
     },
     {
       title: 'Ngày tạo',
       dataIndex: 'createdAt',
+      width: 150,
       key: 'createdAt',
+      render: (value) => formatDate(value),
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'isActive',
+      width: 150,
+      key: 'isActive',
       render: (value) => {
-        return formatDate(value);
+        const status = findInArr(statuses, value);
+        return <Tag color={status.color}>{status.name}</Tag>;
       },
     },
     {

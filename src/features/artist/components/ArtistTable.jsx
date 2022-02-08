@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { genderList } from 'constants';
 
 function ArtistTable({ list, isLoading, pagination, onPageChange }) {
-  const history = useHistory()
+  const history = useHistory();
   const columns = [
     {
       title: 'Họ và tên',
@@ -18,12 +18,14 @@ function ArtistTable({ list, isLoading, pagination, onPageChange }) {
     {
       title: 'Giới tính',
       dataIndex: 'gender',
+      width: 150,
       key: 'gender',
       render: (value) => findInArr(genderList, value, 'name'),
     },
     {
       title: 'Ngày sinh',
       dataIndex: 'dateOfBirth',
+      width: 150,
       key: 'dateOfBirth',
       render: (value) => {
         return formatDate(value);
@@ -32,6 +34,7 @@ function ArtistTable({ list, isLoading, pagination, onPageChange }) {
     {
       title: 'Trạng thái',
       dataIndex: 'isActive',
+width: 150,
       key: 'isActive',
       render: (value) => {
         const status = findInArr(statuses, value);

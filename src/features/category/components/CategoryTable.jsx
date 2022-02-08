@@ -17,6 +17,7 @@ function CategoryTable({ list, isLoading, pagination, onPageChange }) {
     {
       title: 'Trạng thái',
       dataIndex: 'isActive',
+width: 150,
       render: (value) => {
         const status = findInArr(statuses, value);
         return <Tag color={status.color}>{status.name}</Tag>;
@@ -25,6 +26,7 @@ function CategoryTable({ list, isLoading, pagination, onPageChange }) {
     {
       title: 'Ngày cập nhật',
       dataIndex: 'updatedAt',
+width: 150,
       key: 'updatedAt',
       render: (value) => {
         return formatDate(value);
@@ -33,6 +35,7 @@ function CategoryTable({ list, isLoading, pagination, onPageChange }) {
     {
       title: 'Ngày tạo',
       dataIndex: 'createdAt',
+width: 150,
       key: 'createdAt',
       render: (value) => {
         return formatDate(value);

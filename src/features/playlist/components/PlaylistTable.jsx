@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 function PlaylistTable({ list, isLoading, pagination, onPageChange }) {
-  const history = useHistory()
+  const history = useHistory();
   const columns = [
     {
       title: 'Tên',
@@ -17,11 +17,13 @@ function PlaylistTable({ list, isLoading, pagination, onPageChange }) {
     {
       title: 'Lượt nghe',
       dataIndex: 'view',
+      width: 150,
       key: 'view',
     },
     {
       title: 'Trạng thái',
       dataIndex: 'isActive',
+      width: 150,
       key: 'isActive',
       render: (value) => {
         const status = findInArr(statuses, value);
