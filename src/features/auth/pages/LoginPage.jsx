@@ -1,11 +1,10 @@
 import { Button, Checkbox, Form, Input, message } from 'antd';
+import { StorageKeys } from 'constants';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 import { useHistory } from 'react-router';
+import { Redirect } from 'react-router-dom';
 import { login } from '../../auth/authSlice';
-import { ACCESS_TOKEN } from 'constants';
-import { StorageKeys } from 'constants';
 
 function Login(props) {
   const dispatch = useDispatch();
@@ -13,7 +12,10 @@ function Login(props) {
 
   const onFinish = async (values) => {
     try {
-      const data = await dispatch(login(values)).unwrap();
+      const payload = { ...values };
+      delete payload.remember;
+      const data = await dispatch(login(payload)).unwrap();
+      localStorage.setItem(StorageKeys.LOGIN, JSON.stringify(values));
       history.push('/');
       message.success('Đăng nhập thành công');
     } catch (error) {
@@ -21,13 +23,15 @@ function Login(props) {
     }
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
-
   if (Boolean(localStorage.getItem(StorageKeys.ACCESS_TOKEN))) {
     return <Redirect to="/" />;
   }
+
+  const handleValuesChange = (changedValue, allValues) => {
+    if (changedValue.hasOwnProperty('remember') && !changedValue.remember) {
+      localStorage.removeItem(StorageKeys.LOGIN);
+    }
+  };
 
   return (
     <div className="login-container">
@@ -35,16 +39,26 @@ function Login(props) {
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
-        initialValues={{ remember: true }}
+        initialValues={JSON.parse(localStorage.getItem(StorageKeys.LOGIN))}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
+        onValuesChange={handleValuesChange}
       >
-        <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Vui lòng nhập email' }]}>
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: 'Vui lòng điền email' },
+            {
+              type: 'email',
+              message: 'Vui lòng nhập email hợp lệ',
+            },
+          ]}
+        >
           <Input />
         </Form.Item>
 
-        <Form.Item label="Mật khẩu" name="password" rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}>
+        <Form.Item label="Mật khẩu" name="password" rules={[{ required: true, message: 'Vui lòng điền mật khẩu' }]}>
           <Input.Password />
         </Form.Item>
 

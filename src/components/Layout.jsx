@@ -24,8 +24,6 @@ const ArtistFeature = lazy(() => import('features/artist'));
 const CategoryFeature = lazy(() => import('features/category'));
 
 
-
-
 const { Header: LayoutHeader, Sider, Content, Footer: LayoutFooter } = Layout;
 
 export default function DefaultLayout() {

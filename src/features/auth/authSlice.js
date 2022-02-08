@@ -1,29 +1,19 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import userApi from 'api/userAPI';
+import userAPI from 'api/userAPI';
 import { StorageKeys } from 'constants';
 
-export const register = createAsyncThunk('user/register', async (payload) => {
-  const data = await userApi.register(payload);
+export const login = createAsyncThunk('auth/login', async (payload) => {
+  const { data } = await userAPI.login(payload);
 
   // save data to local storage
-  localStorage.setItem(StorageKeys.ACCESS_TOKEN, data.jwt);
+  localStorage.setItem(StorageKeys.ACCESS_TOKEN, data.token);
   localStorage.setItem(StorageKeys.USER, JSON.stringify(data.user));
 
   return data.user;
 });
 
-export const login = createAsyncThunk('user/login', async (payload) => {
-  const data = await userApi.login(payload);
-
-  // save data to local storage
-  localStorage.setItem(StorageKeys.ACCESS_TOKEN, data.jwt);
-  localStorage.setItem(StorageKeys.USER, JSON.stringify(data.user));
-
-  return data.user;
-});
-
-const userSlice = createSlice({
-  name: 'user',
+const authSlice = createSlice({
+  name: 'auth',
   initialState: {
     current: JSON.parse(localStorage.getItem(StorageKeys.USER)) || {},
     settings: {},
@@ -38,16 +28,12 @@ const userSlice = createSlice({
     },
   },
   extraReducers: {
-    [register.fulfilled]: (state, action) => {
-      state.current = action.payload;
-    },
-
     [login.fulfilled]: (state, action) => {
       state.current = action.payload;
     },
   },
 });
 
-const { actions, reducer } = userSlice;
+const { actions, reducer } = authSlice;
 export const { logout } = actions;
 export default reducer;
