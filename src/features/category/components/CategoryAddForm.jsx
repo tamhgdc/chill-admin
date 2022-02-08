@@ -115,12 +115,6 @@ function CategoryAddForm() {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Mô tả')}>
-            <Form.Item className="mb-0" name="description" rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}>
-              <Input.TextArea placeholder="Mô tả" />
-            </Form.Item>
-          </Descriptions.Item>
-
           <Descriptions.Item label={requiredLabel('Trạng thái')}>
             <Form.Item
               className="mb-0"
@@ -132,6 +126,12 @@ function CategoryAddForm() {
                   <Select.Option value={status.id}>{status.name}</Select.Option>
                 ))}
               </Select>
+            </Form.Item>
+          </Descriptions.Item>
+
+          <Descriptions.Item label={requiredLabel('Mô tả')}>
+            <Form.Item className="mb-0" name="description" rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}>
+              <Input.TextArea placeholder="Mô tả" />
             </Form.Item>
           </Descriptions.Item>
 

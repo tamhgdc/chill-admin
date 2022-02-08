@@ -63,3 +63,8 @@ a {
 .upload-media .ant-upload {
   width: 100% !important;
 }
+
+
+.feature-form .ant-descriptions-item-label {
+  width: 30%;
+}

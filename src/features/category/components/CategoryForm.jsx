@@ -5,7 +5,6 @@ import { differentObject, formatDate, requiredLabel } from 'utils';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { IMAGE_API_URL } from 'config';
 
-
 function CategoryForm({ data = {}, onUpdate }) {
   const [form] = Form.useForm();
   const dataRef = useRef(null);
@@ -41,7 +40,6 @@ function CategoryForm({ data = {}, onUpdate }) {
     setChangedData({});
     setBannerURL(data.bannerURL);
   };
-
 
   const handleChange = (info) => {
     if (info.file.status === 'uploading') {
@@ -82,8 +80,16 @@ function CategoryForm({ data = {}, onUpdate }) {
     <Form form={form} initialValues={data} onValuesChange={handleValuesChange} onFinish={handleUpdateClick}>
       <Card title="Chi tiết thể loại">
         <Descriptions column={1} bordered className="feature-form category-form">
+          <Descriptions.Item label="ID">
+            <span>{data._id}</span>
+          </Descriptions.Item>
+
           <Descriptions.Item label={requiredLabel('Hình ảnh')}>
-            <Form.Item className="mb-0" name="bannerURL">
+            <Form.Item
+              className="mb-0"
+              name="bannerURL"
+              rules={[{ required: true, message: 'Vui lòng chọn hình ảnh' }]}
+            >
               <Upload
                 name="image"
                 listType="picture-card"
@@ -102,19 +108,9 @@ function CategoryForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label="ID">
-            <span>{data._id}</span>
-          </Descriptions.Item>
-
           <Descriptions.Item label={requiredLabel('Tên')}>
-            <Form.Item className="mb-0" name="name">
+            <Form.Item className="mb-0" name="name" rules={[{ required: true, message: 'Vui lòng điền tên' }]}>
               <Input placeholder="Tên" />
-            </Form.Item>
-          </Descriptions.Item>
-
-          <Descriptions.Item label={requiredLabel('Mô tả')}>
-            <Form.Item className="mb-0" name="description">
-              <Input.TextArea placeholder="Mô tả" />
             </Form.Item>
           </Descriptions.Item>
 
@@ -122,13 +118,19 @@ function CategoryForm({ data = {}, onUpdate }) {
             <Form.Item
               className="mb-0"
               name="isActive"
-              rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
             >
               <Select placeholder="Trạng thái">
                 {statuses.map((status) => (
                   <Select.Option value={status.id}>{status.name}</Select.Option>
                 ))}
               </Select>
+            </Form.Item>
+          </Descriptions.Item>
+
+          <Descriptions.Item label={requiredLabel('Mô tả')}>
+            <Form.Item className="mb-0" name="description" rules={[{ required: true, message: 'Vui lòng điền mô tả' }]}>
+              <Input.TextArea placeholder="Mô tả" />
             </Form.Item>
           </Descriptions.Item>
 

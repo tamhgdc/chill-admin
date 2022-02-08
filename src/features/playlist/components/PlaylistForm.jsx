@@ -125,6 +125,10 @@ function PlaylistForm({ data = {}, onUpdate }) {
     <Form form={form} initialValues={data} onValuesChange={handleValuesChange} onFinish={handleUpdateClick}>
       <Card title="Chi tiết playlist">
         <Descriptions column={1} bordered className="feature-form playlist-form">
+          <Descriptions.Item label="ID">
+            <span>{data._id}</span>
+          </Descriptions.Item>
+
           <Descriptions.Item label={requiredLabel('Hình ảnh')}>
             <Form.Item className="mb-0" name="imageURL">
               <Upload
@@ -135,6 +139,7 @@ function PlaylistForm({ data = {}, onUpdate }) {
                 action={`${IMAGE_API_URL}images`}
                 beforeUpload={beforeUpload}
                 onChange={handleChange}
+                rules={[{ required: true, message: 'Vui lòng chọn hình ảnh' }]}
               >
                 {imageURL && !imageLoading ? (
                   <img src={imageURL} alt="avatar" style={{ width: '100%' }} />
@@ -146,7 +151,7 @@ function PlaylistForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Ảnh bìa')}>
-            <Form.Item className="mb-0" name="bannerURL">
+            <Form.Item className="mb-0" name="bannerURL" rules={[{ required: true, message: 'Vui lòng chọn ảnh bìa' }]}>
               <Upload
                 name="image"
                 listType="picture-card"
@@ -165,11 +170,7 @@ function PlaylistForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label="ID">
-            <span>{data._id}</span>
-          </Descriptions.Item>
-
-          <Descriptions.Item label={requiredLabel('Tên')}>
+          <Descriptions.Item label={requiredLabel('Tên')} rules={[{ required: true, message: 'Vui lòng điền tên' }]}>
             <Form.Item className="mb-0" name="name">
               <Input placeholder="Tên" />
             </Form.Item>
@@ -179,7 +180,10 @@ function PlaylistForm({ data = {}, onUpdate }) {
             <span>{data.songList?.length || 0}</span>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Danh sách bài hát')}>
+          <Descriptions.Item
+            label={requiredLabel('Danh sách bài hát')}
+            rules={[{ required: true, message: 'Vui lòng chọn danh sách bài hát' }]}
+          >
             <Form.Item className="mb-0" name="songList">
               <Select
                 mode="multiple"
@@ -199,17 +203,11 @@ function PlaylistForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Mô tả')}>
-            <Form.Item className="mb-0" name="description">
-              <Input.TextArea placeholder="Mô tả" />
-            </Form.Item>
-          </Descriptions.Item>
-
           <Descriptions.Item label={requiredLabel('Trạng thái')}>
             <Form.Item
               className="mb-0"
               name="isActive"
-              rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
             >
               <Select placeholder="Trạng thái">
                 {statuses.map((status) => (
@@ -219,8 +217,12 @@ function PlaylistForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label="Thể loại">
-            <Form.Item className="mb-0" name="categoryId">
+          <Descriptions.Item label={requiredLabel('Thể loại')}>
+            <Form.Item
+              className="mb-0"
+              name="categoryId"
+              rules={[{ required: true, message: 'Vui lòng chọn thể loại' }]}
+            >
               <Select
                 placeholder="Chọn thể loại"
                 showSearch
@@ -235,6 +237,16 @@ function PlaylistForm({ data = {}, onUpdate }) {
                   </Select.Option>
                 ))}
               </Select>
+            </Form.Item>
+          </Descriptions.Item>
+
+          <Descriptions.Item label={requiredLabel('Mô tả')}>
+            <Form.Item
+              className="mb-0"
+              name="description"
+              rules={[{ required: true, message: 'Vui lòng điền tên mô tả' }]}
+            >
+              <Input.TextArea placeholder="Mô tả" />
             </Form.Item>
           </Descriptions.Item>
 

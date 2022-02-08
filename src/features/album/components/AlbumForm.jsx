@@ -6,7 +6,7 @@ import { IMAGE_API_URL } from 'config';
 import { statuses } from 'constants';
 import React, { useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
-import { differentObject, formatDate, requiredLabel, unAccent } from 'utils';
+import { differentObject, formatDate, renderArtistFromList, requiredLabel, unAccent } from 'utils';
 
 function AlbumForm({ data = {}, onUpdate }) {
   const [form] = Form.useForm();
@@ -31,7 +31,7 @@ function AlbumForm({ data = {}, onUpdate }) {
     select: (value) => value?.data,
   });
 
-  const { data: songList = [] } = useQuery('songs', () => songAPI.getAll({ select: true, limit: 100000 }), {
+  const { data: songList = [] } = useQuery('songs', () => songAPI.getAll({ limit: 100000 }), {
     select: (value) => value?.data,
   });
 
@@ -121,6 +121,10 @@ function AlbumForm({ data = {}, onUpdate }) {
     <Form form={form} initialValues={data} onValuesChange={handleValuesChange} onFinish={handleUpdateClick}>
       <Card title="Chi tiết album">
         <Descriptions column={1} bordered className="feature-form album-form">
+          <Descriptions.Item label="ID">
+            <span>{data._id}</span>
+          </Descriptions.Item>
+
           <Descriptions.Item label={requiredLabel('Hình ảnh')}>
             <Form.Item className="mb-0" name="imageURL">
               <Upload
@@ -161,12 +165,8 @@ function AlbumForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label="ID">
-            <span>{data._id}</span>
-          </Descriptions.Item>
-
           <Descriptions.Item label={requiredLabel('Tên')}>
-            <Form.Item className="mb-0" name="name">
+            <Form.Item className="mb-0" name="name" rules={[{ required: true, message: 'Vui lòng điền tên album' }]}>
               <Input placeholder="Tên" />
             </Form.Item>
           </Descriptions.Item>
@@ -176,7 +176,11 @@ function AlbumForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Danh sách bài hát')}>
-            <Form.Item className="mb-0" name="songList">
+            <Form.Item
+              className="mb-0"
+              name="songList"
+              rules={[{ required: true, message: 'Vui lòng chọn danh sách bài hát' }]}
+            >
               <Select
                 mode="multiple"
                 placeholder="Chọn thể loại"
@@ -187,16 +191,10 @@ function AlbumForm({ data = {}, onUpdate }) {
               >
                 {songList.map((song) => (
                   <Select.Option key={song._id} value={song._id}>
-                    {song.name}
+                    {`${song.name} ${renderArtistFromList(song.artistList)}`}
                   </Select.Option>
                 ))}
               </Select>
-            </Form.Item>
-          </Descriptions.Item>
-
-          <Descriptions.Item label={requiredLabel('Mô tả')}>
-            <Form.Item className="mb-0" name="description">
-              <Input.TextArea placeholder="Mô tả" />
             </Form.Item>
           </Descriptions.Item>
 
@@ -204,7 +202,7 @@ function AlbumForm({ data = {}, onUpdate }) {
             <Form.Item
               className="mb-0"
               name="isActive"
-              rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
             >
               <Select placeholder="Trạng thái">
                 {statuses.map((status) => (
@@ -215,7 +213,11 @@ function AlbumForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Thể loại')}>
-            <Form.Item className="mb-0" name="categoryId">
+            <Form.Item
+              className="mb-0"
+              name="categoryId"
+              rules={[{ required: true, message: 'Vui lòng chọn thể loại' }]}
+            >
               <Select
                 placeholder="Chọn thể loại"
                 showSearch
@@ -229,6 +231,12 @@ function AlbumForm({ data = {}, onUpdate }) {
                   </Select.Option>
                 ))}
               </Select>
+            </Form.Item>
+          </Descriptions.Item>
+
+          <Descriptions.Item label={requiredLabel('Mô tả')}>
+            <Form.Item className="mb-0" name="description" rules={[{ required: true, message: 'Vui lòng điền mô tả' }]}>
+              <Input.TextArea placeholder="Mô tả" />
             </Form.Item>
           </Descriptions.Item>
 

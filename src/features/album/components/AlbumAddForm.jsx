@@ -139,7 +139,7 @@ function AlbumAddForm() {
       <Card title="Thêm bài hát">
         <Descriptions column={1} bordered className="feature-form user-form">
           <Descriptions.Item label={requiredLabel('Hình ảnh')}>
-            <Form.Item className="mb-0" name="imageURL">
+            <Form.Item className="mb-0" name="imageURL" rules={[{ required: true, message: 'Vui lòng chọn hình ảnh' }]}>
               <Upload
                 name="image"
                 listType="picture-card"
@@ -159,7 +159,7 @@ function AlbumAddForm() {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Ảnh bìa')}>
-            <Form.Item className="mb-0" name="bannerURL">
+            <Form.Item className="mb-0" name="bannerURL" rules={[{ required: true, message: 'Vui lòng chọn ảnh bìa' }]}>
               <Upload
                 name="image"
                 listType="picture-card"
@@ -185,11 +185,7 @@ function AlbumAddForm() {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Nghệ sỹ')}>
-            <Form.Item
-              className="mb-0"
-              name="artistId"
-              rules={[{ required: true, message: 'Vui lòng chọn nghệ sỹ' }]}
-            >
+            <Form.Item className="mb-0" name="artistId" rules={[{ required: true, message: 'Vui lòng chọn nghệ sỹ' }]}>
               <Select
                 placeholder="Chọn nghệ sỹ"
                 showSearch
@@ -231,7 +227,11 @@ function AlbumAddForm() {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Danh sách bài hát')}>
-            <Form.Item className="mb-0" name="songList">
+            <Form.Item
+              className="mb-0"
+              name="songList"
+              rules={[{ required: true, message: 'Vui lòng chọn danh sách bài hát' }]}
+            >
               <Select
                 mode="multiple"
                 placeholder="Chọn bài hát"

@@ -146,6 +146,10 @@ function SongForm({ data = {}, onUpdate }) {
     <Form form={form} initialValues={data} onValuesChange={handleValuesChange} onFinish={handleUpdateClick}>
       <Card title="Chi tiết bài hát">
         <Descriptions column={1} bordered className="feature-form song-form">
+          <Descriptions.Item label="ID">
+            <span>{data._id}</span>
+          </Descriptions.Item>
+
           <Descriptions.Item label={requiredLabel('Hình ảnh')}>
             <Form.Item className="mb-0" name="imageURL">
               <Upload
@@ -167,7 +171,11 @@ function SongForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Âm thanh')} className="upload-media">
-            <Form.Item className="mb-0" name="mediaURL">
+            <Form.Item
+              className="mb-0"
+              name="mediaURL"
+              rules={[{ required: true, message: 'Vui lòng tải lên âm thanh' }]}
+            >
               <Upload
                 name="song"
                 listType="picture-card"
@@ -188,12 +196,8 @@ function SongForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label="ID">
-            <span>{data._id}</span>
-          </Descriptions.Item>
-
           <Descriptions.Item label={requiredLabel('Tên')}>
-            <Form.Item className="mb-0" name="name">
+            <Form.Item className="mb-0" name="name" rules={[{ required: true, message: 'Vui lòng điền tên bài hát' }]}>
               <Input placeholder="Tên" />
             </Form.Item>
           </Descriptions.Item>
@@ -223,7 +227,11 @@ function SongForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Thể loại')}>
-            <Form.Item className="mb-0" name="categoryId">
+            <Form.Item
+              className="mb-0"
+              name="categoryId"
+              rules={[{ required: true, message: 'Vui lòng chọn thể loại' }]}
+            >
               <Select
                 placeholder="Chọn thể loại"
                 showSearch
@@ -244,7 +252,7 @@ function SongForm({ data = {}, onUpdate }) {
             <Form.Item
               className="mb-0"
               name="isActive"
-              rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
             >
               <Select placeholder="Trạng thái">
                 {statuses.map((status) => (

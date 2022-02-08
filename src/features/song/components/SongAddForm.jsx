@@ -167,7 +167,7 @@ function SongAddForm() {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Âm thanh')} className="upload-media">
-            <Form.Item className="mb-0" name="mediaURL" rules={[{ required: true, message: 'Vui lòng chọn âm thanh' }]}>
+            <Form.Item className="mb-0" name="mediaURL" rules={[{ required: true, message: 'Vui lòng tải lên âm thanh' }]}>
               <Upload
                 name="song"
                 listType="picture-card"
@@ -195,7 +195,11 @@ function SongAddForm() {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Nghệ sỹ')}>
-            <Form.Item className="mb-0" name="artistList" rules={[{ required: true, message: 'Vui lòng chọn nghệ sỹ' }]}>
+            <Form.Item
+              className="mb-0"
+              name="artistList"
+              rules={[{ required: true, message: 'Vui lòng chọn nghệ sỹ' }]}
+            >
               <Select
                 mode="multiple"
                 placeholder="Chọn nghệ sỹ"

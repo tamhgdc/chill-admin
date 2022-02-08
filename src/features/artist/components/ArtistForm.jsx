@@ -140,7 +140,7 @@ function ArtistForm({ data = {}, onUpdate }) {
       <Card title="Chi tiết nghệ sỹ">
         <Descriptions column={1} bordered className="feature-form artist-form">
           <Descriptions.Item label={requiredLabel('Ảnh đại diện')}>
-            <Form.Item className="mb-0" name="avatarURL">
+            <Form.Item className="mb-0" name="avatarURL" rules={[{ required: true, message: 'Vui lòng ảnh đại diện' }]}>
               <Upload
                 name="image"
                 listType="picture-card"
@@ -160,7 +160,7 @@ function ArtistForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Ảnh bìa')}>
-            <Form.Item className="mb-0" name="bannerURL">
+            <Form.Item className="mb-0" name="bannerURL" rules={[{ required: true, message: 'Vui lòng chọn ảnh bìa' }]}>
               <Upload
                 name="image"
                 listType="picture-card"
@@ -184,7 +184,7 @@ function ArtistForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Tên')}>
-            <Form.Item className="mb-0" name="fullName">
+            <Form.Item className="mb-0" name="fullName" rules={[{ required: true, message: 'Vui lòng nhập tên' }]}>
               <Input placeholder="Tên" />
             </Form.Item>
           </Descriptions.Item>
@@ -193,7 +193,7 @@ function ArtistForm({ data = {}, onUpdate }) {
             <Form.Item
               className="mb-0"
               name="isActive"
-              rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
             >
               <Select placeholder="Trạng thái">
                 {statuses.map((status) => (
@@ -204,7 +204,11 @@ function ArtistForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Thể loại')}>
-            <Form.Item className="mb-0" name="categoryId">
+            <Form.Item
+              className="mb-0"
+              name="categoryId"
+              rules={[{ required: true, message: 'Vui lòng chọn thể loại' }]}
+            >
               <Select
                 placeholder="Chọn thể loại"
                 showSearch
@@ -222,7 +226,11 @@ function ArtistForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Ngày sinh')}>
-            <Form.Item name="dateOfBirth" className="mb-0">
+            <Form.Item
+              name="dateOfBirth"
+              className="mb-0"
+              rules={[{ required: true, message: 'Vui lòng chọn ngày sinh' }]}
+            >
               <DatePicker
                 disabledDate={(value) => {
                   if (value.valueOf() > moment().valueOf()) {
@@ -234,6 +242,12 @@ function ArtistForm({ data = {}, onUpdate }) {
                 format="DD/MM/YYYY"
                 allowClear={false}
               />
+            </Form.Item>
+          </Descriptions.Item>
+
+          <Descriptions.Item label={requiredLabel('Mô tả')}>
+            <Form.Item className="mb-0" name="description" rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}>
+              <Input.TextArea placeholder="Mô tả" />
             </Form.Item>
           </Descriptions.Item>
 

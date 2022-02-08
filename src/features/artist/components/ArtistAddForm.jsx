@@ -178,12 +178,6 @@ function ArtistAddForm() {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Mô tả')}>
-            <Form.Item className="mb-0" name="description" rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}>
-              <Input.TextArea placeholder="Mô tả" />
-            </Form.Item>
-          </Descriptions.Item>
-
           <Descriptions.Item label={requiredLabel('Ngày sinh')}>
             <Form.Item name="dateOfBirth" className="mb-0">
               <DatePicker
@@ -198,6 +192,12 @@ function ArtistAddForm() {
                 allowClear={false}
                 rules={[{ required: true, message: 'Vui lòng chọn ngày sinh' }]}
               />
+            </Form.Item>
+          </Descriptions.Item>
+
+          <Descriptions.Item label={requiredLabel('Mô tả')}>
+            <Form.Item className="mb-0" name="description" rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}>
+              <Input.TextArea placeholder="Mô tả" />
             </Form.Item>
           </Descriptions.Item>
 

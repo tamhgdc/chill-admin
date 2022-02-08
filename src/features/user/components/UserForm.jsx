@@ -1,7 +1,7 @@
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, DatePicker, Descriptions, Form, Input, message, Select, Upload } from 'antd';
 import { IMAGE_API_URL } from 'config';
 import { genderList, roleList, statuses } from 'constants';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { differentObject, formatDate, requiredLabel } from 'utils';
@@ -88,6 +88,10 @@ function UserForm({ data = {}, onUpdate }) {
     <Form form={form} onValuesChange={handleValuesChange} onFinish={handleUpdateClick}>
       <Card title="Chi tiết người dùng">
         <Descriptions column={1} bordered className="feature-form user-form">
+          <Descriptions.Item label="ID">
+            <span>{data._id}</span>
+          </Descriptions.Item>
+
           <Descriptions.Item label={requiredLabel('Ảnh đại diện')}>
             <Form.Item className="mb-0" name="avatarURL">
               <Upload
@@ -108,12 +112,12 @@ function UserForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label="ID">
-            <span>{data._id}</span>
-          </Descriptions.Item>
-
           <Descriptions.Item label={requiredLabel('Họ và tên')}>
-            <Form.Item className="mb-0" name="fullName">
+            <Form.Item
+              className="mb-0"
+              name="fullName"
+              rules={[{ required: true, message: 'Vui lòng điền tên người dùng' }]}
+            >
               <Input placeholder="Họ và tên" />
             </Form.Item>
           </Descriptions.Item>
@@ -123,38 +127,10 @@ function UserForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Giới tính')}>
-            <Form.Item className="mb-0" name="gender" rules={[{ required: true, message: 'Vui lòng chọn giới tính!' }]}>
+            <Form.Item className="mb-0" name="gender" rules={[{ required: true, message: 'Vui lòng chọn giới tính' }]}>
               <Select placeholder="Giới tính">
                 {genderList.map((gender) => (
                   <Select.Option value={gender.id}>{gender.name}</Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Descriptions.Item>
-
-          <Descriptions.Item label={requiredLabel('Loại người dùng')}>
-            <Form.Item
-              className="mb-0"
-              name="role"
-              rules={[{ required: true, message: 'Vui lòng chọn loại người dùng!' }]}
-            >
-              <Select placeholder="Loại người dùng">
-                {roleList.map((role) => (
-                  <Select.Option value={role.id}>{role.name}</Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Descriptions.Item>
-
-          <Descriptions.Item label={requiredLabel('Trạng thái')}>
-            <Form.Item
-              className="mb-0"
-              name="isActive"
-              rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
-            >
-              <Select placeholder="Trạng thái">
-                {statuses.map((status) => (
-                  <Select.Option value={status.id}>{status.name}</Select.Option>
                 ))}
               </Select>
             </Form.Item>
@@ -176,6 +152,34 @@ function UserForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
+          <Descriptions.Item label={requiredLabel('Loại người dùng')}>
+            <Form.Item
+              className="mb-0"
+              name="role"
+              rules={[{ required: true, message: 'Vui lòng chọn loại người dùng' }]}
+            >
+              <Select placeholder="Loại người dùng">
+                {roleList.map((role) => (
+                  <Select.Option value={role.id}>{role.name}</Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Descriptions.Item>
+
+          <Descriptions.Item label={requiredLabel('Trạng thái')}>
+            <Form.Item
+              className="mb-0"
+              name="isActive"
+              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
+            >
+              <Select placeholder="Trạng thái">
+                {statuses.map((status) => (
+                  <Select.Option value={status.id}>{status.name}</Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Descriptions.Item>
+
           <Descriptions.Item label="Thời gian tạo">
             <span>{formatDate(data.createdAt)}</span>
           </Descriptions.Item>
@@ -183,8 +187,6 @@ function UserForm({ data = {}, onUpdate }) {
           <Descriptions.Item label="Thời gian cập nhật">
             <span>{formatDate(data.updatedAt)}</span>
           </Descriptions.Item>
-
-        {  console.log({data})}
 
           {Object.keys(changedData).length > 0 && (
             <Descriptions.Item>

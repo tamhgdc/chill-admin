@@ -51,20 +51,30 @@ function UserAddForm() {
             <Form.Item
               className="mb-0"
               name="fullName"
-              rules={[{ required: true, message: 'Vui lòng điền thông tin' }]}
+              rules={[{ required: true, message: 'Vui lòng điền tên người dùng' }]}
             >
               <Input placeholder="Họ và tên" />
             </Form.Item>
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Email')}>
-            <Form.Item className="mb-0" name="email" rules={[{ required: true, message: 'Vui lòng điền thông tin' }]}>
+            <Form.Item
+              className="mb-0"
+              name="email"
+              rules={[
+                { required: true, message: 'Vui lòng điền email' },
+                {
+                  type: 'email',
+                  message: 'Vui lòng nhập email hợp lệ',
+                },
+              ]}
+            >
               <Input placeholder="Email" />
             </Form.Item>
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Giới tính')}>
-            <Form.Item className="mb-0" name="gender" rules={[{ required: true, message: 'Vui lòng chọn giới tính!' }]}>
+            <Form.Item className="mb-0" name="gender" rules={[{ required: true, message: 'Vui lòng chọn giới tính' }]}>
               <Select placeholder="Giới tính">
                 {genderList.map((gender) => (
                   <Select.Option value={gender.id}>{gender.name}</Select.Option>
@@ -73,17 +83,23 @@ function UserAddForm() {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Loại người dùng')}>
+          <Descriptions.Item label={requiredLabel('Ngày sinh')}>
             <Form.Item
+              name="dateOfBirth"
               className="mb-0"
-              name="role"
-              rules={[{ required: true, message: 'Vui lòng chọn loại người dùng!' }]}
+              rules={[{ required: true, message: 'Vui lòng chọn ngày sinh' }]}
             >
-              <Select placeholder="Loại người dùng">
-                {roleList.map((role) => (
-                  <Select.Option value={role.id}>{role.name}</Select.Option>
-                ))}
-              </Select>
+              <DatePicker
+                disabledDate={(value) => {
+                  if (value.valueOf() > moment().valueOf()) {
+                    return true;
+                  }
+                }}
+                placeholder="Ngày sinh"
+                style={{ display: 'block' }}
+                format="DD/MM/YYYY"
+                allowClear={false}
+              />
             </Form.Item>
           </Descriptions.Item>
 
@@ -101,23 +117,17 @@ function UserAddForm() {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Ngày sinh')}>
+          <Descriptions.Item label={requiredLabel('Loại người dùng')}>
             <Form.Item
-              name="dateOfBirth"
               className="mb-0"
-              rules={[{ required: true, message: 'Vui lòng điền thông tin' }]}
+              name="role"
+              rules={[{ required: true, message: 'Vui lòng chọn loại người dùng!' }]}
             >
-              <DatePicker
-                disabledDate={(value) => {
-                  if (value.valueOf() > moment().valueOf()) {
-                    return true;
-                  }
-                }}
-                placeholder="Ngày sinh"
-                style={{ display: 'block' }}
-                format="DD/MM/YYYY"
-                allowClear={false}
-              />
+              <Select placeholder="Loại người dùng">
+                {roleList.map((role) => (
+                  <Select.Option value={role.id}>{role.name}</Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           </Descriptions.Item>
 
