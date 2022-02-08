@@ -177,12 +177,14 @@ function UserForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label="Thời gian tạo">
-            <span>{formatDate(data.created_at)}</span>
+            <span>{formatDate(data.createdAt)}</span>
           </Descriptions.Item>
 
           <Descriptions.Item label="Thời gian cập nhật">
-            <span>{formatDate(data.updated_at)}</span>
+            <span>{formatDate(data.updatedAt)}</span>
           </Descriptions.Item>
+
+        {  console.log({data})}
 
           {Object.keys(changedData).length > 0 && (
             <Descriptions.Item>

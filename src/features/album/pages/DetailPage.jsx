@@ -17,7 +17,7 @@ function DetailPage(props) {
 
   const breadcrumb = [
     { path: '/albums', name: 'Album' },
-    { path: '', active: false, name: 'Chi tiết album' },
+    { path: '', active: true, name: 'Chi tiết album' },
   ];
 
   const { data = {}, isLoading: getLoading, isError } = useQuery(['album', id], () => albumAPI.getDetail(id));

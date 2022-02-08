@@ -17,7 +17,7 @@ function DetailPage(props) {
 
   const breadcrumb = [
     { path: '/playlists', name: 'Playlist' },
-    { path: '', active: false, name: 'Chi tiết playlist' },
+    { path: '', active: true, name: 'Chi tiết playlist' },
   ];
 
   const { data = {}, isLoading: getLoading, isError } = useQuery(['playlist', id], () => playlistAPI.getDetail(id));

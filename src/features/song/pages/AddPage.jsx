@@ -5,7 +5,7 @@ import SongAddForm from '../components/SongAddForm';
 function AddPage(props) {
   const breadcrumb = [
     { path: '/songs', name: 'Bài hát' },
-    { path: '', active: false, name: 'Thêm bài hát' },
+    { path: '', active: true, name: 'Thêm bài hát' },
   ];
 
   return (

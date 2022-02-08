@@ -17,7 +17,7 @@ function DetailPage(props) {
 
   const breadcrumb = [
     { path: '/users', name: 'Người dùng' },
-    { path: '', active: false, name: 'Chi tiết người dùng' },
+    { path: '', active: true, name: 'Chi tiết người dùng' },
   ];
 
   const { data = {}, isLoading: getLoading, isError } = useQuery(['user', id], () => userAPI.get(id));

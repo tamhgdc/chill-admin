@@ -24,16 +24,16 @@ function CategoryTable({ list, isLoading, pagination, onPageChange }) {
     },
     {
       title: 'Ngày cập nhật',
-      dataIndex: 'updated_at',
-      key: 'updated_at',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
       render: (value) => {
         return formatDate(value);
       },
     },
     {
       title: 'Ngày tạo',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       render: (value) => {
         return formatDate(value);
       },

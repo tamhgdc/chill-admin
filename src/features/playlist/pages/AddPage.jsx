@@ -12,7 +12,7 @@ function AddPage(props) {
 
   const breadcrumb = [
     { path: '/playlists', name: 'Playlist' },
-    { path: '', active: false, name: 'Thêm playlist' },
+    { path: '', active: true, name: 'Thêm playlist' },
   ]
 
   const { mutate, isLoading: createLoading } = useMutation(({ data }) => playlistAPI.add(data), {

@@ -5,7 +5,7 @@ import ArtistAddForm from '../components/ArtistAddForm'
 function AddPage(props) {
   const breadcrumb = [
     { path: '/artists', name: 'Nghệ sỹ' },
-    { path: '', active: false, name: 'Thêm nghệ sỹ' },
+    { path: '', active: true, name: 'Thêm nghệ sỹ' },
   ]
 
 

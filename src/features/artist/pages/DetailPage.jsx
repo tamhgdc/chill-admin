@@ -17,7 +17,7 @@ function DetailPage(props) {
 
   const breadcrumb = [
     { path: '/artists', name: 'Nghệ sỹ' },
-    { path: '', active: false, name: 'Chi tiết nghệ sỹ' },
+    { path: '', active: true, name: 'Chi tiết nghệ sỹ' },
   ];
 
   const { data = {}, isLoading: getLoading, isError } = useQuery(['artist', id], () => artistAPI.get(id));

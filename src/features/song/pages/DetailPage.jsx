@@ -17,7 +17,7 @@ function DetailPage(props) {
 
   const breadcrumb = [
     { path: '/songs', name: 'Bài hát' },
-    { path: '', active: false, name: 'Chi tiết bài hát' },
+    { path: '', active: true, name: 'Chi tiết bài hát' },
   ];
 
   const { data = {}, isLoading: getLoading, isError } = useQuery(['song', id], () => songAPI.get(id));

@@ -6,7 +6,7 @@ function AddPage(props) {
 
   const breadcrumb = [
     { path: '/users', name: 'Người dùng' },
-    { path: '', active: false, name: 'Thêm người dùng' },
+    { path: '', active: true, name: 'Thêm người dùng' },
   ]
 
   return (

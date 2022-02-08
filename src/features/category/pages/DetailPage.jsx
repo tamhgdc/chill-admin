@@ -17,7 +17,7 @@ function DetailPage(props) {
 
   const breadcrumb = [
     { path: '/categories', name: 'Thể loại' },
-    { path: '', active: false, name: 'Chi tiết thể loại' },
+    { path: '', active: true, name: 'Chi tiết thể loại' },
   ];
 
   const { data = {}, isLoading: getLoading, isError } = useQuery(['category', id], () => categoryAPI.get(id));

@@ -5,7 +5,7 @@ import CategoryAddForm from '../components/CategoryAddForm';
 function AddPage(props) {
   const breadcrumb = [
     { path: '/categories', name: 'Thể loại' },
-    { path: '', active: false, name: 'Thêm thể loại' },
+    { path: '', active: true, name: 'Thêm thể loại' },
   ];
 
   return (

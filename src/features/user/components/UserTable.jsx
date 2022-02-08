@@ -62,8 +62,8 @@ function UserTable({ list, isLoading, pagination, onPageChange }) {
     },
     {
       title: 'Ngày tạo',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       render: (value) => {
         return formatDate(value);
       },

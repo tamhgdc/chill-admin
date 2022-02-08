@@ -9,11 +9,6 @@ import { Link } from 'react-router-dom';
 function SongTable({ list, isLoading, pagination, onPageChange }) {
   const history = useHistory()
   const columns = [
-    // {
-    //   title: 'ID',
-    //   dataIndex: 'id',
-    //   width: 60,
-    // },
     {
       title: 'Tên',
       dataIndex: 'name',
@@ -36,8 +31,8 @@ function SongTable({ list, isLoading, pagination, onPageChange }) {
     },
     {
       title: 'Ngày tạo',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       render: (value) => {
         return formatDate(value);
       },
