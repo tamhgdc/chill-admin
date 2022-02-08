@@ -1,22 +1,23 @@
 import { CheckSquareOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Descriptions, Form, Input, message, Modal, Select, Upload } from 'antd';
+import albumAPI from 'api/albumAPI';
 import artistAPI from 'api/artistAPI';
 import categoryAPI from 'api/categoryAPI';
 import songAPI from 'api/songAPI';
-import { IMAGE_API_URL, UPLOAD_SONG_API_URL } from 'config';
+import { IMAGE_API_URL } from 'config';
 import { statuses } from 'constants';
 import React, { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom';
-import { requiredLabel, unAccent } from 'utils';
+import { renderArtistFromList, requiredLabel, unAccent } from 'utils';
 
-function SongAddForm() {
+function AlbumAddForm() {
   const [form] = Form.useForm();
   const history = useHistory();
   const [imageLoading, setImageLoading] = useState(false);
-  const [mediaLoading, setMediaLoading] = useState(false);
+  const [bannerLoading, setBannerLoading] = useState(false);
   const [imageURL, setImageURL] = useState(null);
-  const [mediaURL, setMediaURL] = useState(null);
+  const [bannerURL, setBannerURL] = useState(null);
 
   const { data: categoryList = [], isLoading: categoryLoading } = useQuery(
     'categories',
@@ -34,27 +35,31 @@ function SongAddForm() {
     }
   );
 
-  const { mutate, isLoading } = useMutation((data) => songAPI.add(data), {
+  const { data: songList = [], isLoading: songLoading } = useQuery('songs', () => songAPI.getAll({ limit: 100000 }), {
+    select: (value) => value?.data,
+  });
+
+  const { mutate, isLoading } = useMutation((data) => albumAPI.add(data), {
     onError: () => {
-      message.error('Thêm bài hát thất bại!');
+      message.error('Thêm album thất bại!');
     },
 
     onSuccess: () => {
       Modal.confirm({
         icon: <CheckSquareOutlined style={{ color: '#2e7d32' }} />,
-        title: 'Thêm bài hát thành công!',
+        title: 'Thêm album thành công!',
         okText: 'Quay về danh sách',
         cancelText: 'Tạo mới',
         onOk() {
           history.push({
-            pathname: '/songs',
+            pathname: '/albums',
           });
           return;
         },
         onCancel() {
           form.resetFields();
           setImageURL(null);
-          setMediaURL(null);
+          setBannerURL(null);
         },
       });
     },
@@ -66,9 +71,10 @@ function SongAddForm() {
       payload.imageURL = payload.imageURL.fileList.slice(-1)[0].response.data.path;
     }
 
-    if (payload.mediaURL) {
-      payload.mediaURL = payload.mediaURL.fileList.slice(-1)[0].response.data.path;
+    if (payload.bannerURL) {
+      payload.bannerURL = payload.bannerURL.fileList.slice(-1)[0].response.data.path;
     }
+
     mutate(payload);
   };
 
@@ -79,9 +85,9 @@ function SongAddForm() {
     </div>
   );
 
-  const uploadButtonMedia = (
+  const uploadButtonBanner = (
     <div>
-      {mediaLoading ? <LoadingOutlined /> : <PlusOutlined />}
+      {bannerLoading ? <LoadingOutlined /> : <PlusOutlined />}
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
@@ -100,20 +106,6 @@ function SongAddForm() {
     return isJpgOrPng && isLt2M;
   };
 
-  const beforeUploadMedia = (file) => {
-    const isVideo = file.type === 'audio/mpeg' || file.type === 'audio/ogg' || file.type === 'audio/wav';
-    if (!isVideo) {
-      message.error('You can only upload audio file!');
-    }
-
-    const isLt10M = file.size / 1024 / 1024 < 10;
-    if (!isLt10M) {
-      message.error('Image must smaller than 10MB!');
-    }
-
-    return isVideo && isLt10M;
-  };
-
   const handleChange = (info) => {
     if (info.file.status === 'uploading') {
       setImageLoading(true);
@@ -128,17 +120,17 @@ function SongAddForm() {
     }
   };
 
-  const handleChangeMedia = (info) => {
+  const handleChangeBanner = (info) => {
     if (info.file.status === 'uploading') {
-      setMediaLoading(true);
+      setBannerLoading(true);
       return;
     }
 
     if (info.file.status === 'done') {
       // Get this url from response in real world.
-      const mediaURL = info.file?.response?.data?.path;
-      setMediaURL(mediaURL);
-      setMediaLoading(false);
+      const bannerURL = info.file?.response?.data?.path;
+      setBannerURL(bannerURL);
+      setBannerLoading(false);
     }
   };
 
@@ -147,7 +139,7 @@ function SongAddForm() {
       <Card title="Thêm bài hát">
         <Descriptions column={1} bordered className="feature-form user-form">
           <Descriptions.Item label={requiredLabel('Hình ảnh')}>
-            <Form.Item className="mb-0" name="imageURL" rules={[{ required: true, message: 'Vui lòng chọn hình ảnh' }]}>
+            <Form.Item className="mb-0" name="imageURL">
               <Upload
                 name="image"
                 listType="picture-card"
@@ -166,23 +158,21 @@ function SongAddForm() {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Âm thanh')} className="upload-media">
-            <Form.Item className="mb-0" name="mediaURL" rules={[{ required: true, message: 'Vui lòng chọn âm thanh' }]}>
+          <Descriptions.Item label={requiredLabel('Ảnh bìa')}>
+            <Form.Item className="mb-0" name="bannerURL">
               <Upload
-                name="song"
+                name="image"
                 listType="picture-card"
                 className="avatar-uploader"
                 showUploadList={false}
-                action={`${UPLOAD_SONG_API_URL}upload-song`}
-                beforeUpload={beforeUploadMedia}
-                onChange={handleChangeMedia}
+                action={`${IMAGE_API_URL}images`}
+                beforeUpload={beforeUpload}
+                onChange={handleChangeBanner}
               >
-                {mediaURL && !mediaLoading ? (
-                  <audio controls>
-                    <source src={mediaURL} type="audio/ogg" />
-                  </audio>
+                {bannerURL && !bannerLoading ? (
+                  <img src={bannerURL} alt="avatar" style={{ width: '100%' }} />
                 ) : (
-                  uploadButtonMedia
+                  uploadButtonBanner
                 )}
               </Upload>
             </Form.Item>
@@ -195,9 +185,12 @@ function SongAddForm() {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Nghệ sỹ')}>
-            <Form.Item className="mb-0" name="artistList" rules={[{ required: true, message: 'Vui lòng chọn nghệ sỹ' }]}>
+            <Form.Item
+              className="mb-0"
+              name="artistId"
+              rules={[{ required: true, message: 'Vui lòng chọn nghệ sỹ' }]}
+            >
               <Select
-                mode="multiple"
                 placeholder="Chọn nghệ sỹ"
                 showSearch
                 loading={artistLoading}
@@ -237,6 +230,32 @@ function SongAddForm() {
             </Form.Item>
           </Descriptions.Item>
 
+          <Descriptions.Item label={requiredLabel('Danh sách bài hát')}>
+            <Form.Item className="mb-0" name="songList">
+              <Select
+                mode="multiple"
+                placeholder="Chọn bài hát"
+                loading={songLoading}
+                showSearch
+                filterOption={(input, option) =>
+                  unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
+                }
+              >
+                {songList.map((song) => (
+                  <Select.Option key={song._id} value={song._id}>
+                    {`${song.name} ${renderArtistFromList(song.artistList)}`}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Descriptions.Item>
+
+          <Descriptions.Item label={requiredLabel('Mô tả')}>
+            <Form.Item className="mb-0" name="description">
+              <Input.TextArea placeholder="Mô tả" />
+            </Form.Item>
+          </Descriptions.Item>
+
           <Descriptions.Item label={requiredLabel('Trạng thái')}>
             <Form.Item
               className="mb-0"
@@ -267,6 +286,6 @@ function SongAddForm() {
   );
 }
 
-SongAddForm.propTypes = {};
+AlbumAddForm.propTypes = {};
 
-export default SongAddForm;
+export default AlbumAddForm;
