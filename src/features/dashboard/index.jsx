@@ -51,7 +51,7 @@ function DashBoard(props) {
           </Col>
         </Row>
       </Card>
-      <Card title="Thống kê của tháng" className="mt-30">
+      {/* <Card title="Thống kê của tháng" className="mt-30">
         <Row gutter={[16, 16]}>
           <Col span={8}>
             <Card>
@@ -89,7 +89,7 @@ function DashBoard(props) {
             </Card>
           </Col>
         </Row>
-      </Card>
+      </Card> */}
     </Fragment>
   );
 }
