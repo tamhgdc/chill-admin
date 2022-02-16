@@ -106,9 +106,9 @@ function SongForm({ data = {}, onUpdate }) {
       message.error('You can only upload audio file!');
     }
 
-    const isLt10M = file.size / 1024 / 1024 < 10;
+    const isLt10M = file.size / 1024 / 1024 < 20;
     if (!isLt10M) {
-      message.error('Image must smaller than 10MB!');
+      message.error('Image must smaller than 20MB!');
     }
 
     return isVideo && isLt10M;
