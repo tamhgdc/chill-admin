@@ -137,7 +137,7 @@ function ArtistForm({ data = {}, onUpdate }) {
 
   return (
     <Form form={form} onValuesChange={handleValuesChange} onFinish={handleUpdateClick}>
-      <Card title="Chi tiết nghệ sỹ">
+      <Card title="Chi tiết ca sĩ">
         <Descriptions column={1} bordered className="feature-form artist-form">
           <Descriptions.Item label={requiredLabel('Ảnh đại diện')}>
             <Form.Item className="mb-0" name="avatarURL" rules={[{ required: true, message: 'Vui lòng ảnh đại diện' }]}>

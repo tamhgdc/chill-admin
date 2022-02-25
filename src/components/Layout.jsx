@@ -25,6 +25,10 @@ const ArtistFeature = lazy(() => import('features/artist'));
 const CategoryFeature = lazy(() => import('features/category'));
 const PermissionFeature = lazy(() => import('features/permission'));
 const DashboardFeature = lazy(() => import('features/dashboard'));
+const ChangePasswordPage = lazy(() => import('features/auth/pages/ChangPassword'));
+const InfoPage = lazy(() => import('features/auth/pages/UserDetail'));
+
+
 
 const { Header: LayoutHeader, Sider, Content, Footer: LayoutFooter } = Layout;
 
@@ -76,7 +80,7 @@ export default function DefaultLayout() {
           </Menu.Item>
 
           <Menu.Item key="artists" icon={<UserOutlined />}>
-            Quản lý nghệ sỹ
+            Quản lý ca sĩ
             <Link to="/artists" />
           </Menu.Item>
 
@@ -108,6 +112,8 @@ export default function DefaultLayout() {
                 <Route path="/albums" component={AlbumFeature} />
                 <Route path="/categories" component={CategoryFeature} />
                 <Route path="/permission" component={PermissionFeature} />
+                <Route path="/change-pw" exact component={ChangePasswordPage} />
+                <Route path="/my-account" exact component={InfoPage} />
                 <Route component={NotFound} />
               </Switch>
             </Suspense>

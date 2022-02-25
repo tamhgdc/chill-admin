@@ -1,8 +1,11 @@
 import { Col, DatePicker, Form, Input, Row, Select } from 'antd';
+import artistAPI from 'api/artistAPI';
+import categoryAPI from 'api/categoryAPI';
 import CardFilter from 'components/CardFilter';
 import { statuses } from 'constants';
 import React, { useEffect } from 'react';
-import { checkDisableFrom, checkDisableTo } from 'utils';
+import { useQuery } from 'react-query';
+import { checkDisableFrom, checkDisableTo, unAccent } from 'utils';
 
 function AlbumFilter({ filter, onFilterChange, onResetFilter }) {
   const [form] = Form.useForm();
@@ -20,6 +23,19 @@ function AlbumFilter({ filter, onFilterChange, onResetFilter }) {
     onResetFilter();
   };
 
+
+  const { data: categoryList = [] } = useQuery('categories', () => categoryAPI.getAll({ limit: 1000 }), {
+    select: (value) => value?.data,
+  });
+
+  const { data: artistList = [], isLoading: artistLoading } = useQuery(
+    'artists',
+    () => artistAPI.getAll({ limit: 1000 }),
+    {
+      select: (value) => value?.data,
+    }
+  );
+
   return (
     <Form form={form} initialValues={filter} onFinish={handleFinish}>
       <CardFilter resetFilter={handleResetFilter}>
@@ -27,13 +43,55 @@ function AlbumFilter({ filter, onFilterChange, onResetFilter }) {
           <Col span={24}>
             <Row gutter={8} className="d-flex align-items-center flex-wrap">
               <Col span={6}>
-                <Form.Item className="mb-4" name="id">
-                  <Input placeholder="Id" allowClear />
+                <Form.Item className="mb-4" name="q">
+                  <Input placeholder="Tên" allowClear />
                 </Form.Item>
               </Col>
 
               <Col span={6}>
-                <Form.Item name="status">
+                <Form.Item name="artistId">
+                  <Select
+                    placeholder="Chọn ca sĩ"
+                    showSearch
+                    allowClear
+                    loading={artistLoading}
+                    filterOption={(input, option) =>
+                      unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
+                    }
+                  >
+                    {artistList &&
+                      artistList?.map((artist) => (
+                        <Select.Option key={artist._id} value={artist._id}>
+                          {artist.fullName}
+                        </Select.Option>
+                      ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item name="categoryId">
+                  <Select
+                    placeholder="Chọn thể loại"
+                    showSearch
+                    allowClear
+                    loading={artistLoading}
+                    filterOption={(input, option) =>
+                      unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
+                    }
+                  >
+                    {categoryList &&
+                      categoryList?.map((category) => (
+                        <Select.Option key={category._id} value={category._id}>
+                          {category.name}
+                        </Select.Option>
+                      ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item name="isActive">
                   <Select placeholder="Trạng thái" allowClear>
                     {statuses.map((status) => (
                       <Select.Option key={status.id} value={status.id}>
@@ -44,7 +102,7 @@ function AlbumFilter({ filter, onFilterChange, onResetFilter }) {
                 </Form.Item>
               </Col>
 
-              <Col span={6}>
+              {/* <Col span={6}>
                 <Form.Item name="created_from">
                   <DatePicker
                     format="DD/MM/YYYY"
@@ -54,7 +112,7 @@ function AlbumFilter({ filter, onFilterChange, onResetFilter }) {
                   />
                 </Form.Item>
               </Col>
-              
+
               <Col span={6}>
                 <Form.Item name="created_to">
                   <DatePicker
@@ -64,7 +122,7 @@ function AlbumFilter({ filter, onFilterChange, onResetFilter }) {
                     disabledDate={(value) => checkDisableTo(value, 'created_from', form)}
                   />
                 </Form.Item>
-              </Col>
+              </Col> */}
             </Row>
           </Col>
         </Row>

@@ -5,6 +5,10 @@ import { StorageKeys } from 'constants';
 export const login = createAsyncThunk('auth/login', async (payload) => {
   const { data } = await userAPI.login(payload);
 
+  if (data.user.role < 2) {
+    throw new Error('403');
+  }
+
   // save data to local storage
   localStorage.setItem(StorageKeys.ACCESS_TOKEN, data.token);
   localStorage.setItem(StorageKeys.USER, JSON.stringify(data.user));
@@ -26,6 +30,14 @@ const authSlice = createSlice({
 
       state.current = {};
     },
+    changeValue(state, action) {
+      const { name, value } = action.payload;
+      if (name === 'current') {
+        localStorage.setItem(StorageKeys.USER, JSON.stringify(value));
+      }
+
+      state[name] = value;
+    },
   },
   extraReducers: {
     [login.fulfilled]: (state, action) => {
@@ -35,5 +47,5 @@ const authSlice = createSlice({
 });
 
 const { actions, reducer } = authSlice;
-export const { logout } = actions;
+export const { logout, changeValue } = actions;
 export default reducer;

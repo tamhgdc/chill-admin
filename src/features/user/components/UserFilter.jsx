@@ -1,7 +1,10 @@
 import { Col, DatePicker, Form, Input, Row, Select } from 'antd';
+import permissionAPI from 'api/permissionAPI';
 import CardFilter from 'components/CardFilter';
+import { genderList } from 'constants';
 import { statuses } from 'constants';
 import React, { useEffect } from 'react';
+import { useQuery } from 'react-query';
 import { checkDisableFrom, checkDisableTo } from 'utils';
 
 function UserFilter({ filter, onFilterChange, onResetFilter }) {
@@ -20,6 +23,14 @@ function UserFilter({ filter, onFilterChange, onResetFilter }) {
     onResetFilter();
   };
 
+  const { data: permissionList, isLoading: permissionLoading } = useQuery(
+    ['permission'],
+    () => permissionAPI.getAll({ limit: 1000 }),
+    {
+      select: (data) => data?.data,
+    }
+  );
+
   return (
     <Form form={form} initialValues={filter} onFinish={handleFinish}>
       <CardFilter resetFilter={handleResetFilter}>
@@ -27,13 +38,40 @@ function UserFilter({ filter, onFilterChange, onResetFilter }) {
           <Col span={24}>
             <Row gutter={8} className="d-flex align-items-center flex-wrap">
               <Col span={6}>
-                <Form.Item className="mb-4" name="id">
-                  <Input placeholder="Id" allowClear />
+                <Form.Item name="q">
+                  <Input placeholder="Tên" allowClear />
                 </Form.Item>
               </Col>
 
               <Col span={6}>
-                <Form.Item name="status">
+                <Form.Item name="email">
+                  <Input placeholder="Email" allowClear />
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item name="role">
+                  <Select placeholder="Loại người dùng" allowClear>
+                    {permissionList &&
+                      permissionList.map((role) => (
+                        <Select.Option value={Number(role.code)}>{role.name}</Select.Option>
+                      ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item name="gender">
+                  <Select placeholder="Giới tính" allowClear>
+                    {genderList.map((gender) => (
+                      <Select.Option value={gender.id}>{gender.name}</Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item name="isActive">
                   <Select placeholder="Trạng thái" allowClear>
                     {statuses.map((status) => (
                       <Select.Option key={status.id} value={status.id}>
@@ -44,7 +82,7 @@ function UserFilter({ filter, onFilterChange, onResetFilter }) {
                 </Form.Item>
               </Col>
 
-              <Col span={6}>
+              {/* <Col span={6}>
                 <Form.Item name="created_from">
                   <DatePicker
                     format="DD/MM/YYYY"
@@ -54,7 +92,7 @@ function UserFilter({ filter, onFilterChange, onResetFilter }) {
                   />
                 </Form.Item>
               </Col>
-              
+
               <Col span={6}>
                 <Form.Item name="created_to">
                   <DatePicker
@@ -64,7 +102,7 @@ function UserFilter({ filter, onFilterChange, onResetFilter }) {
                     disabledDate={(value) => checkDisableTo(value, 'created_from', form)}
                   />
                 </Form.Item>
-              </Col>
+              </Col> */}
             </Row>
           </Col>
         </Row>

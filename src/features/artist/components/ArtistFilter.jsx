@@ -1,5 +1,6 @@
 import { Col, DatePicker, Form, Input, Row, Select } from 'antd';
 import CardFilter from 'components/CardFilter';
+import { genderList } from 'constants';
 import { statuses } from 'constants';
 import React, { useEffect } from 'react';
 import { checkDisableFrom, checkDisableTo } from 'utils';
@@ -27,13 +28,23 @@ function ArtistFilter({ filter, onFilterChange, onResetFilter }) {
           <Col span={24}>
             <Row gutter={8} className="d-flex align-items-center flex-wrap">
               <Col span={6}>
-                <Form.Item className="mb-4" name="id">
-                  <Input placeholder="Id" allowClear />
+                <Form.Item className="mb-4" name="q">
+                  <Input placeholder="Tên" allowClear />
                 </Form.Item>
               </Col>
 
               <Col span={6}>
-                <Form.Item name="status">
+                <Form.Item name="gender">
+                  <Select placeholder="Giới tính" allowClear>
+                    {genderList.map((gender) => (
+                      <Select.Option value={gender.id}>{gender.name}</Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item name="isActive">
                   <Select placeholder="Trạng thái" allowClear>
                     {statuses.map((status) => (
                       <Select.Option key={status.id} value={status.id}>
@@ -44,7 +55,7 @@ function ArtistFilter({ filter, onFilterChange, onResetFilter }) {
                 </Form.Item>
               </Col>
 
-              <Col span={6}>
+              {/* <Col span={6}>
                 <Form.Item name="created_from">
                   <DatePicker
                     format="DD/MM/YYYY"
@@ -64,7 +75,7 @@ function ArtistFilter({ filter, onFilterChange, onResetFilter }) {
                     disabledDate={(value) => checkDisableTo(value, 'created_from', form)}
                   />
                 </Form.Item>
-              </Col>
+              </Col> */}
             </Row>
           </Col>
         </Row>

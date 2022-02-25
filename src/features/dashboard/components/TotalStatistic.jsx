@@ -32,7 +32,7 @@ function Total(props) {
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Tổng số lượng nghệ sỹ" value={artistCount} />
+            <Statistic title="Tổng số lượng ca sĩ" value={artistCount} />
           </Card>
         </Col>
         <Col span={8}>

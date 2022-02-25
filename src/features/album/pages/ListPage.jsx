@@ -24,10 +24,11 @@ function ListPage(props) {
 
   const queryParams = useMemo(() => {
     const params = queryString.parse(location.search);
-    const { code, type, status, created_from, created_to, used_from, used_to, limit, page } = params;
+    const { q, isActive, type, status, created_from, created_to, used_from, used_to, limit, page } = params;
     return {
       ...params,
-      code: code ? code : undefined,
+      q: q ? q : undefined,
+      isActive: isActive ? (isActive === 'false' ? false : true) : undefined,
       type: type ? Number(type) : undefined,
       status: status ? Number(status) : undefined,
       created_from: created_from ? moment(created_from) : undefined,
@@ -92,13 +93,11 @@ function ListPage(props) {
   const { mutate, isLoading: deleteLoading } = useMutation((id) => albumAPI.delete(id), {
     onError: () => {
       message.error('Xóa thất bại');
-
     },
 
     onSuccess: () => {
       message.success('Xóa thành công');
       queryClient.invalidateQueries('albums');
-
     },
   });
 
@@ -109,7 +108,7 @@ function ListPage(props) {
       confirmLoading: deleteLoading,
       okText: 'Đồng ý',
       cancelText: 'Hủy bỏ',
-      onOk: () => mutate(id)
+      onOk: () => mutate(id),
     });
   };
 

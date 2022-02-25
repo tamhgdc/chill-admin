@@ -31,6 +31,11 @@ const userAPI = {
     const url = `/users/${id}`;
     return axiosClient.delete(url, { baseURL: USER_API_URL });
   },
+
+  changePassword(data) {
+    const url = '/auth/change-password'
+    return axiosClient.post(url, data, { baseURL: USER_API_URL })
+  },
 };
 
 export default userAPI;

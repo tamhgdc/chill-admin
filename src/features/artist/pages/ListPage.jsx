@@ -17,7 +17,7 @@ const defaultPagination = {
   limit: 10,
 };
 
-const breadcrumb = [{ path: '', active: true, name: 'Nghệ sỹ' }];
+const breadcrumb = [{ path: '', active: true, name: 'Ca sĩ' }];
 
 function ListPage(props) {
   const history = useHistory();
@@ -25,9 +25,11 @@ function ListPage(props) {
 
   const queryParams = useMemo(() => {
     const params = queryString.parse(location.search);
-    const { code, type, status, created_from, created_to, used_from, used_to, limit, page } = params;
+    const { isActive, gender, code, type, status, created_from, created_to, used_from, used_to, limit, page } = params;
     return {
       ...params,
+      isActive: isActive ? (isActive === 'false' ? false : true) : undefined,
+      gender: gender ? Number(gender) : undefined,
       code: code ? code : undefined,
       type: type ? Number(type) : undefined,
       status: status ? Number(status) : undefined,

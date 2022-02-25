@@ -203,15 +203,15 @@ function SongForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Nghệ sỹ')}>
+          <Descriptions.Item label={requiredLabel('Ca sĩ')}>
             <Form.Item
               className="mb-0"
               name="artistIdList"
-              rules={[{ required: true, message: 'Vui lòng chọn nghệ sỹ' }]}
+              rules={[{ required: true, message: 'Vui lòng chọn ca sĩ' }]}
             >
               <Select
                 mode="multiple"
-                placeholder="Chọn nghệ sỹ"
+                placeholder="Chọn ca sĩ"
                 showSearch
                 loading={artistLoading}
                 filterOption={(input, option) =>

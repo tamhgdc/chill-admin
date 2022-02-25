@@ -25,12 +25,13 @@ function ListPage(props) {
 
   const queryParams = useMemo(() => {
     const params = queryString.parse(location.search);
-    const { code, type, status, created_from, created_to, used_from, used_to, limit, page } = params;
+    const { role, q, gender, isActive, created_from, created_to, used_from, used_to, limit, page } = params;
     return {
       ...params,
-      code: code ? code : undefined,
-      type: type ? Number(type) : undefined,
-      status: status ? Number(status) : undefined,
+      role: role ? Number(role) : undefined,
+      q: q ? q : undefined,
+      gender: gender ? Number(gender) : undefined,
+      isActive: isActive ? (isActive === 'false' ? false : true) : undefined,
       created_from: created_from ? moment(created_from) : undefined,
       created_to: created_to ? moment(created_to) : undefined,
       used_from: used_from ? moment(used_from) : undefined,

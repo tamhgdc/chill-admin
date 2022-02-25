@@ -118,7 +118,7 @@ function ListPage(props) {
       <Breadcrumb routes={breadcrumb} />
 
       <div className="content-padding">
-        <PermissionFilter filter={queryParams} onFilterChange={handleFilterChange} onResetFilter={resetFilter} />
+        {/* <PermissionFilter filter={queryParams} onFilterChange={handleFilterChange} onResetFilter={resetFilter} /> */}
         <PermissionTable
           list={data.data}
           isLoading={isLoading}

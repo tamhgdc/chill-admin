@@ -19,13 +19,13 @@ function ArtistAddForm() {
 
   const { mutate, isLoading } = useMutation((data) => artistAPI.add(data), {
     onError: () => {
-      message.error('Thêm nghệ sỹ thất bại!');
+      message.error('Thêm ca sĩ thất bại!');
     },
 
     onSuccess: () => {
       Modal.confirm({
         icon: <CheckSquareOutlined style={{ color: '#2e7d32' }} />,
-        title: 'Thêm nghệ sỹ thành công!',
+        title: 'Thêm ca sĩ thành công!',
         okText: 'Quay về danh sách',
         cancelText: 'Tạo mới',
         onOk() {
@@ -126,7 +126,7 @@ function ArtistAddForm() {
 
   return (
     <Form form={form} onFinish={handleFinish}>
-      <Card title="Thêm nghệ sỹ">
+      <Card title="Thêm ca sĩ">
         <Descriptions column={1} bordered className="feature-form user-form">
           <Descriptions.Item label={requiredLabel('Ảnh đại diện')}>
             <Form.Item

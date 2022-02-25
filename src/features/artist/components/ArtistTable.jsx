@@ -65,10 +65,10 @@ function ArtistTable({ list, isLoading, pagination, onPageChange, onDelete }) {
 
   return (
     <Card
-      title="Danh sách nghệ sỹ"
+      title="Danh sách ca sĩ"
       extra={
         <Button icon={<PlusOutlined />} type="primary" onClick={() => history.push('/artists/add')}>
-          Thêm nghệ sỹ
+          Thêm ca sĩ
         </Button>
       }
     >
@@ -84,7 +84,7 @@ function ArtistTable({ list, isLoading, pagination, onPageChange, onDelete }) {
           pageSize: pagination.limit,
           current: pagination.page,
           position: ['topRight', 'bottomRight'],
-          showTotal: (total, range) => `${total} nghệ sỹ | Từ ${range[0]} đến ${range[1]}`,
+          showTotal: (total, range) => `${total} ca sĩ | Từ ${range[0]} đến ${range[1]}`,
           showSizeChanger: false,
           showLessItems: true,
         }}

@@ -184,10 +184,10 @@ function AlbumAddForm() {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Nghệ sỹ')}>
-            <Form.Item className="mb-0" name="artistId" rules={[{ required: true, message: 'Vui lòng chọn nghệ sỹ' }]}>
+          <Descriptions.Item label={requiredLabel('Ca sĩ')}>
+            <Form.Item className="mb-0" name="artistId" rules={[{ required: true, message: 'Vui lòng chọn ca sĩ' }]}>
               <Select
-                placeholder="Chọn nghệ sỹ"
+                placeholder="Chọn ca sĩ"
                 showSearch
                 loading={artistLoading}
                 filterOption={(input, option) =>

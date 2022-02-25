@@ -16,19 +16,19 @@ function DetailPage(props) {
   const queryClient = useQueryClient();
 
   const breadcrumb = [
-    { path: '/artists', name: 'Nghệ sỹ' },
-    { path: '', active: true, name: 'Chi tiết nghệ sỹ' },
+    { path: '/artists', name: 'Ca sĩ' },
+    { path: '', active: true, name: 'Chi tiết ca sĩ' },
   ];
 
   const { data = {}, isLoading: getLoading, isError } = useQuery(['artist', id], () => artistAPI.get(id));
 
   const { mutate, isLoading: updateLoading } = useMutation(({ id, data }) => artistAPI.update(id, data), {
     onError: () => {
-      message.error('Cập nhật nghệ sỹ thất bại!');
+      message.error('Cập nhật ca sĩ thất bại!');
     },
 
     onSuccess: () => {
-      message.success('Cập nhật nghệ sỹ thành công!');
+      message.success('Cập nhật ca sĩ thành công!');
     },
 
     onSettled: () => {

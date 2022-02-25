@@ -122,7 +122,7 @@ function ListPage(props) {
       <Breadcrumb routes={breadcrumb} />
 
       <div className="content-padding">
-        <CategoryFilter filter={queryParams} onFilterChange={handleFilterChange} onResetFilter={resetFilter} />
+        {/* <CategoryFilter filter={queryParams} onFilterChange={handleFilterChange} onResetFilter={resetFilter} /> */}
         <CategoryTable
           list={data.data}
           isLoading={isLoading}
