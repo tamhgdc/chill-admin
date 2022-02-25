@@ -5,12 +5,13 @@ import categoryAPI from 'api/categoryAPI';
 import songAPI from 'api/songAPI';
 import { IMAGE_API_URL, UPLOAD_SONG_API_URL } from 'config';
 import { statuses } from 'constants';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { requiredLabel, unAccent } from 'utils';
 
 function SongAddForm() {
+  const audioRef = useRef()
   const [form] = Form.useForm();
   const history = useHistory();
   const [imageLoading, setImageLoading] = useState(false);
@@ -69,6 +70,8 @@ function SongAddForm() {
     if (payload.mediaURL) {
       payload.mediaURL = payload.mediaURL.fileList.slice(-1)[0].response.data.path;
     }
+
+    payload.time = audioRef.current.duration
     mutate(payload);
   };
 
@@ -178,7 +181,7 @@ function SongAddForm() {
                 onChange={handleChangeMedia}
               >
                 {mediaURL && !mediaLoading ? (
-                  <audio controls>
+                  <audio controls ref={audioRef}>
                     <source src={mediaURL} type="audio/ogg" />
                   </audio>
                 ) : (

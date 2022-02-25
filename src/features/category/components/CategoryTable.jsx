@@ -1,13 +1,13 @@
-import { EyeOutlined, PlusOutlined } from '@ant-design/icons/';
+import { DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons/';
 import { Button, Card, Empty, Table, Tag } from 'antd';
 import { statuses } from 'constants';
 import { findInArr, formatDate } from 'utils';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
-function CategoryTable({ list, isLoading, pagination, onPageChange }) {
-  const history = useHistory()
+function CategoryTable({ list, isLoading, pagination, onPageChange, onDelete }) {
+  const history = useHistory();
   const columns = [
     {
       title: 'Tên',
@@ -17,7 +17,7 @@ function CategoryTable({ list, isLoading, pagination, onPageChange }) {
     {
       title: 'Trạng thái',
       dataIndex: 'isActive',
-width: 150,
+      width: 150,
       render: (value) => {
         const status = findInArr(statuses, value);
         return <Tag color={status.color}>{status.name}</Tag>;
@@ -26,7 +26,7 @@ width: 150,
     {
       title: 'Ngày cập nhật',
       dataIndex: 'updatedAt',
-width: 150,
+      width: 150,
       key: 'updatedAt',
       render: (value) => {
         return formatDate(value);
@@ -35,7 +35,7 @@ width: 150,
     {
       title: 'Ngày tạo',
       dataIndex: 'createdAt',
-width: 150,
+      width: 150,
       key: 'createdAt',
       render: (value) => {
         return formatDate(value);
@@ -48,13 +48,16 @@ width: 150,
       align: 'center',
       render: (value) => {
         return (
-          <Link
-            to={{
-              pathname: `/categories/${value._id}`,
-            }}
-          >
-            <Button type="primary" icon={<EyeOutlined />} />
-          </Link>
+          <Fragment>
+            <Button danger icon={<DeleteOutlined />} className="me-2" onClick={() => onDelete(value?._id)} />
+            <Link
+              to={{
+                pathname: `/categories/${value?._id}`,
+              }}
+            >
+              <Button type="primary" icon={<EyeOutlined />} />
+            </Link>
+          </Fragment>
         );
       },
     },

@@ -1,6 +1,6 @@
 import { DeleteOutlined } from '@ant-design/icons';
 import { message, Modal } from 'antd';
-import artistAPI from 'api/artistAPI';
+import permissionAPI from 'api/permissionAPI';
 import Breadcrumb from 'components/Breadcrumb';
 import Error from 'components/Error';
 import moment from 'moment';
@@ -9,15 +9,15 @@ import React, { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 import { transformDateToString } from 'utils';
-import ArtistFilter from '../components/ArtistFilter';
-import ArtistTable from '../components/ArtistTable';
+import PermissionFilter from '../components/PermissionFilter';
+import PermissionTable from '../components/PermissionTable';
 
 const defaultPagination = {
   page: 1,
   limit: 10,
 };
 
-const breadcrumb = [{ path: '', active: true, name: 'Nghệ sỹ' }];
+const breadcrumb = [{ path: '', active: true, name: 'Phân quyền' }];
 
 function ListPage(props) {
   const history = useHistory();
@@ -78,8 +78,7 @@ function ListPage(props) {
     });
   };
 
-  const { data = {}, isLoading, isError } = useQuery(['artists', queryParams], () => artistAPI.getAll(queryParams));
-
+  const { data = {}, isLoading, isError } = useQuery(['permission', queryParams], () => permissionAPI.getAll(queryParams));
   const pagination = {
     page: queryParams.page,
     limit: queryParams.limit,
@@ -92,14 +91,14 @@ function ListPage(props) {
 
   const queryClient = useQueryClient();
 
-  const { mutate, isLoading: deleteLoading } = useMutation((id) => artistAPI.delete(id), {
+  const { mutate, isLoading: deleteLoading } = useMutation((id) => permissionAPI.delete(id), {
     onError: () => {
       message.error('Xóa thất bại');
     },
 
     onSuccess: () => {
       message.success('Xóa thành công');
-      queryClient.invalidateQueries('artists');
+      queryClient.invalidateQueries('permission');
     },
   });
 
@@ -119,8 +118,8 @@ function ListPage(props) {
       <Breadcrumb routes={breadcrumb} />
 
       <div className="content-padding">
-        <ArtistFilter filter={queryParams} onFilterChange={handleFilterChange} onResetFilter={resetFilter} />
-        <ArtistTable
+        <PermissionFilter filter={queryParams} onFilterChange={handleFilterChange} onResetFilter={resetFilter} />
+        <PermissionTable
           list={data.data}
           isLoading={isLoading}
           pagination={pagination}

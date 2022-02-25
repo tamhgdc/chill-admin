@@ -1,27 +1,17 @@
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, DatePicker, Descriptions, Form, Input, message, Select, Upload } from 'antd';
-import permissionAPI from 'api/permissionAPI';
 import { IMAGE_API_URL } from 'config';
 import { genderList, roleList, statuses } from 'constants';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
-import { useQuery } from 'react-query';
 import { differentObject, formatDate, requiredLabel } from 'utils';
 
-function UserForm({ data = {}, onUpdate }) {
+function PermissionForm({ data = {}, onUpdate }) {
   const [form] = Form.useForm();
   const dataRef = useRef(null);
   const [changedData, setChangedData] = useState({});
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [avatarURL, setAvatarURL] = useState(null);
-
-  const {
-    data: permissionList,
-    isLoading: permissionLoading,
-  } = useQuery(['permission'], () => permissionAPI.getAll({ limit: 1000 }), {
-    select: (data) => data?.data,
-  });
-
 
   useEffect(() => {
     setFieldsValue(data);
@@ -46,6 +36,11 @@ function UserForm({ data = {}, onUpdate }) {
     if (payload.avatarURL) {
       payload.avatarURL = payload.avatarURL.fileList.slice(-1)[0].response.data.path;
     }
+    
+    if(payload.code) {
+      payload.code = Number(payload.code)
+    }
+
     onUpdate(data._id, payload);
   };
 
@@ -97,82 +92,28 @@ function UserForm({ data = {}, onUpdate }) {
   return (
     <Form form={form} onValuesChange={handleValuesChange} onFinish={handleUpdateClick}>
       <Card title="Chi tiết người dùng">
-        <Descriptions column={1} bordered className="feature-form user-form">
+        <Descriptions column={1} bordered className="feature-form permission-form">
           <Descriptions.Item label="ID">
             <span>{data._id}</span>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Ảnh đại diện')}>
-            <Form.Item className="mb-0" name="avatarURL">
-              <Upload
-                name="image"
-                listType="picture-card"
-                className="avatar-uploader"
-                showUploadList={false}
-                action={`${IMAGE_API_URL}images`}
-                beforeUpload={beforeUpload}
-                onChange={handleChange}
-              >
-                {avatarURL && !avatarLoading ? (
-                  <img src={avatarURL} alt="avatar" style={{ width: '100%' }} />
-                ) : (
-                  uploadButton
-                )}
-              </Upload>
-            </Form.Item>
-          </Descriptions.Item>
-
-          <Descriptions.Item label={requiredLabel('Họ và tên')}>
+          <Descriptions.Item label={requiredLabel('Tên phân quyền')}>
             <Form.Item
               className="mb-0"
-              name="fullName"
-              rules={[{ required: true, message: 'Vui lòng điền tên người dùng' }]}
+              name="name"
+              rules={[{ required: true, message: 'Vui lòng điền tên phân quyền' }]}
             >
-              <Input placeholder="Họ và tên" />
+              <Input placeholder="Tên phân quyền" />
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label="Email">
-            <span>{data.email}</span>
-          </Descriptions.Item>
-
-          <Descriptions.Item label={requiredLabel('Giới tính')}>
-            <Form.Item className="mb-0" name="gender" rules={[{ required: true, message: 'Vui lòng chọn giới tính' }]}>
-              <Select placeholder="Giới tính">
-                {genderList.map((gender) => (
-                  <Select.Option value={gender.id}>{gender.name}</Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Descriptions.Item>
-
-          <Descriptions.Item label={requiredLabel('Ngày sinh')}>
-            <Form.Item name="dateOfBirth" className="mb-0">
-              <DatePicker
-                disabledDate={(value) => {
-                  if (value.valueOf() > moment().valueOf()) {
-                    return true;
-                  }
-                }}
-                placeholder="Ngày sinh"
-                style={{ display: 'block' }}
-                format="DD/MM/YYYY"
-                allowClear={false}
-              />
-            </Form.Item>
-          </Descriptions.Item>
-
-          <Descriptions.Item label={requiredLabel('Loại người dùng')}>
+          <Descriptions.Item label={requiredLabel('Mã')}>
             <Form.Item
               className="mb-0"
-              name="role"
-              rules={[{ required: true, message: 'Vui lòng chọn loại người dùng' }]}
+              name="code"
+              rules={[{ required: true, message: 'Vui lòng điền mã'}]}
             >
-              <Select placeholder="Loại người dùng">
-                {permissionList && permissionList.map((role) => (
-                  <Select.Option value={Number(role.code)}>{role.name}</Select.Option>
-                ))}
-              </Select>
+              <Input placeholder="Mã" />
             </Form.Item>
           </Descriptions.Item>
 
@@ -180,7 +121,7 @@ function UserForm({ data = {}, onUpdate }) {
             <Form.Item
               className="mb-0"
               name="isActive"
-              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
+              rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
             >
               <Select placeholder="Trạng thái">
                 {statuses.map((status) => (
@@ -216,6 +157,6 @@ function UserForm({ data = {}, onUpdate }) {
   );
 }
 
-UserForm.propTypes = {};
+PermissionForm.propTypes = {};
 
-export default UserForm;
+export default PermissionForm;

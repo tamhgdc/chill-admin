@@ -11,8 +11,18 @@ const songAPI = {
     return axiosClient.get(url);
   },
 
+  updateView(id) {
+    const url = `/songs/song-view/${id}`;
+    return axiosClient.get(url);
+  },
+
   get(id) {
     const url = `/songs/${id}`;
+    return axiosClient.get(url);
+  },
+
+  getSongStatistic() {
+    const url = `/songs/song-statistic`;
     return axiosClient.get(url);
   },
 

@@ -1,14 +1,24 @@
-import { EyeOutlined, PlusOutlined } from '@ant-design/icons/';
+import { DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons/';
 import { Button, Card, Empty, Table, Tag } from 'antd';
 import { statuses } from 'constants';
-import { findInArr, formatDate } from 'utils';
-import React from 'react';
+import { findInArr, findInArr1, formatDate } from 'utils';
+import React, { Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { genderList } from 'constants';
 import { roleList } from 'constants';
+import { useQuery } from 'react-query';
+import permissionAPI from 'api/permissionAPI';
 
-function UserTable({ list, isLoading, pagination, onPageChange }) {
+function UserTable({ list, isLoading, pagination, onPageChange, onDelete }) {
+  const {
+    data,
+    isLoading: permissionLoading,
+    isError,
+  } = useQuery(['permission'], () => permissionAPI.getAll({ limit: 1000 }), {
+    select: (data) => data?.data,
+  });
+
   const history = useHistory();
   const columns = [
     {
@@ -26,7 +36,7 @@ function UserTable({ list, isLoading, pagination, onPageChange }) {
       dataIndex: 'role',
       key: 'role',
       render: (value) => {
-        return findInArr(roleList, value, 'name');
+        return findInArr1(data || [], value, 'code', 'name');
       },
     },
     {
@@ -69,13 +79,16 @@ function UserTable({ list, isLoading, pagination, onPageChange }) {
       align: 'center',
       render: (value) => {
         return (
-          <Link
-            to={{
-              pathname: `/users/${value._id}`,
-            }}
-          >
-            <Button type="primary" icon={<EyeOutlined />} />
-          </Link>
+          <Fragment>
+            <Button danger icon={<DeleteOutlined />} className="me-2" onClick={() => onDelete(value?._id)} />
+            <Link
+              to={{
+                pathname: `/users/${value?._id}`,
+              }}
+            >
+              <Button type="primary" icon={<EyeOutlined />} />
+            </Link>
+          </Fragment>
         );
       },
     },

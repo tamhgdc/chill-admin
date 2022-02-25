@@ -1,12 +1,12 @@
-import { EyeOutlined, PlusOutlined } from '@ant-design/icons/';
+import { DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons/';
 import { Button, Card, Empty, Table, Tag } from 'antd';
 import { statuses } from 'constants';
 import { findInArr } from 'utils';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
-function PlaylistTable({ list, isLoading, pagination, onPageChange }) {
+function PlaylistTable({ list, isLoading, pagination, onPageChange, onDelete }) {
   const history = useHistory();
   const columns = [
     {
@@ -37,13 +37,16 @@ function PlaylistTable({ list, isLoading, pagination, onPageChange }) {
       align: 'center',
       render: (value) => {
         return (
+          <Fragment>
+          <Button danger icon={<DeleteOutlined />} className="me-2" onClick={() => onDelete(value?._id)} />
           <Link
             to={{
-              pathname: `/playlists/${value._id}`,
+              pathname: `/playlists/${value?._id}`,
             }}
           >
             <Button type="primary" icon={<EyeOutlined />} />
           </Link>
+        </Fragment>
         );
       },
     },

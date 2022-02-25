@@ -11,6 +11,7 @@ import { differentObject, formatDate, requiredLabel, unAccent } from 'utils';
 function SongForm({ data = {}, onUpdate }) {
   const [form] = Form.useForm();
   const dataRef = useRef(null);
+  const audioRef = useRef();
 
   const [changedData, setChangedData] = useState({});
   const [imageLoading, setImageLoading] = useState(false);
@@ -55,12 +56,12 @@ function SongForm({ data = {}, onUpdate }) {
     if (payload.mediaURL) {
       payload.mediaURL = payload.mediaURL.fileList.slice(-1)[0].response.data.path;
     }
+    payload.time = audioRef.current.duration;
 
     if (payload.artistIdList) {
       payload.artistList = payload.artistIdList;
       delete payload.artistIdList;
     }
-    console.log(payload);
 
     onUpdate(data._id, payload);
   };
@@ -186,7 +187,7 @@ function SongForm({ data = {}, onUpdate }) {
                 onChange={handleChangeMedia}
               >
                 {mediaURL && !mediaLoading ? (
-                  <audio controls>
+                  <audio controls ref={audioRef}>
                     <source src={mediaURL} type="audio/ogg" />
                   </audio>
                 ) : (
@@ -217,11 +218,12 @@ function SongForm({ data = {}, onUpdate }) {
                   unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
                 }
               >
-                {artistList.map((artist) => (
-                  <Select.Option key={artist._id} value={artist._id}>
-                    {artist.fullName}
-                  </Select.Option>
-                ))}
+                {artistList &&
+                  artistList?.map((artist) => (
+                    <Select.Option key={artist._id} value={artist._id}>
+                      {artist.fullName}
+                    </Select.Option>
+                  ))}
               </Select>
             </Form.Item>
           </Descriptions.Item>
@@ -239,11 +241,12 @@ function SongForm({ data = {}, onUpdate }) {
                   unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
                 }
               >
-                {categoryList.map((category) => (
-                  <Select.Option key={category._id} value={category._id}>
-                    {category.name}
-                  </Select.Option>
-                ))}
+                {categoryList &&
+                  categoryList?.map((category) => (
+                    <Select.Option key={category._id} value={category._id}>
+                      {category.name}
+                    </Select.Option>
+                  ))}
               </Select>
             </Form.Item>
           </Descriptions.Item>

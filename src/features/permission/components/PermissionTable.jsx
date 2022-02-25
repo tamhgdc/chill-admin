@@ -1,35 +1,22 @@
 import { DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons/';
 import { Button, Card, Empty, Table, Tag } from 'antd';
 import { statuses } from 'constants';
-import { findInArr, formatDate } from 'utils';
 import React, { Fragment } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import { genderList } from 'constants';
+import { Link, useHistory } from 'react-router-dom';
+import { findInArr } from 'utils';
 
-function ArtistTable({ list, isLoading, pagination, onPageChange, onDelete }) {
+function PermissionTable({ list, isLoading, pagination, onPageChange, onDelete }) {
   const history = useHistory();
   const columns = [
     {
-      title: 'Họ và tên',
-      dataIndex: 'fullName',
-      key: 'fullName',
+      title: 'Mã',
+      dataIndex: 'code',
+      key: 'code',
     },
     {
-      title: 'Giới tính',
-      dataIndex: 'gender',
-      width: 150,
-      key: 'gender',
-      render: (value) => findInArr(genderList, value, 'name'),
-    },
-    {
-      title: 'Ngày sinh',
-      dataIndex: 'dateOfBirth',
-      width: 150,
-      key: 'dateOfBirth',
-      render: (value) => {
-        return formatDate(value);
-      },
+      title: 'Tên',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: 'Trạng thái',
@@ -52,7 +39,7 @@ function ArtistTable({ list, isLoading, pagination, onPageChange, onDelete }) {
             <Button danger icon={<DeleteOutlined />} className="me-2" onClick={() => onDelete(value?._id)} />
             <Link
               to={{
-                pathname: `/artists/${value?._id}`,
+                pathname: `/permission/${value?._id}`,
               }}
             >
               <Button type="primary" icon={<EyeOutlined />} />
@@ -65,10 +52,10 @@ function ArtistTable({ list, isLoading, pagination, onPageChange, onDelete }) {
 
   return (
     <Card
-      title="Danh sách nghệ sỹ"
+      title="Danh sách phân quyền"
       extra={
-        <Button icon={<PlusOutlined />} type="primary" onClick={() => history.push('/artists/add')}>
-          Thêm nghệ sỹ
+        <Button icon={<PlusOutlined />} type="primary" onClick={() => history.push('/permission/add')}>
+          Thêm phân quyền
         </Button>
       }
     >
@@ -84,7 +71,7 @@ function ArtistTable({ list, isLoading, pagination, onPageChange, onDelete }) {
           pageSize: pagination.limit,
           current: pagination.page,
           position: ['topRight', 'bottomRight'],
-          showTotal: (total, range) => `${total} nghệ sỹ | Từ ${range[0]} đến ${range[1]}`,
+          showTotal: (total, range) => `${total} phân quyền | Từ ${range[0]} đến ${range[1]}`,
           showSizeChanger: false,
           showLessItems: true,
         }}
@@ -95,4 +82,4 @@ function ArtistTable({ list, isLoading, pagination, onPageChange, onDelete }) {
   );
 }
 
-export default ArtistTable;
+export default PermissionTable;

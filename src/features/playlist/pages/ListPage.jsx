@@ -1,10 +1,13 @@
+import { DeleteOutlined } from '@ant-design/icons';
+import { message, Modal } from 'antd';
+import albumAPI from 'api/albumAPI';
 import playlistAPI from 'api/playlistAPI';
 import Breadcrumb from 'components/Breadcrumb';
 import Error from 'components/Error';
 import moment from 'moment';
 import queryString from 'query-string';
 import React, { useMemo } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 import { transformDateToString } from 'utils';
 import PlaylistFilter from '../components/PlaylistFilter';
@@ -82,10 +85,34 @@ function ListPage(props) {
     limit: queryParams.limit,
     total: data.pagination?.count,
   };
-  
+
   // if (isError) {
   //   return <Error />;
   // }
+
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading: deleteLoading } = useMutation((id) => playlistAPI.delete(id), {
+    onError: () => {
+      message.error('Xóa thất bại');
+    },
+
+    onSuccess: () => {
+      message.success('Xóa thành công');
+      queryClient.invalidateQueries('playlists');
+    },
+  });
+
+  const handleDelete = (id) => {
+    Modal.confirm({
+      title: 'Bạn chắc chắn đồng ý xóa?',
+      icon: <DeleteOutlined />,
+      confirmLoading: deleteLoading,
+      okText: 'Đồng ý',
+      cancelText: 'Hủy bỏ',
+      onOk: () => mutate(id),
+    });
+  };
 
   return (
     <div className="content-wrapper">
@@ -93,7 +120,13 @@ function ListPage(props) {
 
       <div className="content-padding">
         <PlaylistFilter filter={queryParams} onFilterChange={handleFilterChange} onResetFilter={resetFilter} />
-        <PlaylistTable list={data.data} isLoading={isLoading} pagination={pagination} onPageChange={handlePageChange} />
+        <PlaylistTable
+          list={data.data}
+          isLoading={isLoading}
+          pagination={pagination}
+          onPageChange={handlePageChange}
+          onDelete={handleDelete}
+        />
       </div>
     </div>
   );

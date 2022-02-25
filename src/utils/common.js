@@ -17,6 +17,13 @@ export const findInArr = (array, value, keyReturn) => {
   }
 };
 
+export const findInArr1 = (array, value, keyCompare, keyReturn) => {
+  if (array && array.length > 0) {
+    let result = array.find((item) => item[keyCompare] * 1 === value * 1);
+    return result ? (keyReturn && result?.[keyReturn] ? result[keyReturn] : result) : undefined;
+  }
+};
+
 export const differentObject = (object, base) => {
   const changes = (object, base) => {
     return _.transform(object, (result, value, key) => {

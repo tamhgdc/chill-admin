@@ -1,10 +1,12 @@
+import { DeleteOutlined } from '@ant-design/icons';
+import { message, Modal } from 'antd';
 import categoryAPI from 'api/categoryAPI';
 import Breadcrumb from 'components/Breadcrumb';
 import Error from 'components/Error';
 import moment from 'moment';
 import queryString from 'query-string';
 import React, { useMemo } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 import { transformDateToString } from 'utils';
 import CategoryFilter from '../components/CategoryFilter';
@@ -76,16 +78,44 @@ function ListPage(props) {
     });
   };
 
-  const { data = {}, isLoading, isError } = useQuery(['categories', queryParams], () => categoryAPI.getAll(queryParams));
+  const {
+    data = {},
+    isLoading,
+    isError,
+  } = useQuery(['categories', queryParams], () => categoryAPI.getAll(queryParams));
   const pagination = {
     page: queryParams.page,
     limit: queryParams.limit,
     total: data.pagination?.count,
   };
-  
+
   // if (isError) {
   //   return <Error />;
   // }
+
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading: deleteLoading } = useMutation((id) => categoryAPI.delete(id), {
+    onError: () => {
+      message.error('Xóa thất bại');
+    },
+
+    onSuccess: () => {
+      message.success('Xóa thành công');
+      queryClient.invalidateQueries('categories');
+    },
+  });
+
+  const handleDelete = (id) => {
+    Modal.confirm({
+      title: 'Bạn chắc chắn đồng ý xóa?',
+      icon: <DeleteOutlined />,
+      confirmLoading: deleteLoading,
+      okText: 'Đồng ý',
+      cancelText: 'Hủy bỏ',
+      onOk: () => mutate(id),
+    });
+  };
 
   return (
     <div className="content-wrapper">
@@ -93,7 +123,13 @@ function ListPage(props) {
 
       <div className="content-padding">
         <CategoryFilter filter={queryParams} onFilterChange={handleFilterChange} onResetFilter={resetFilter} />
-        <CategoryTable list={data.data} isLoading={isLoading} pagination={pagination} onPageChange={handlePageChange} />
+        <CategoryTable
+          list={data.data}
+          isLoading={isLoading}
+          pagination={pagination}
+          onPageChange={handlePageChange}
+          onDelete={handleDelete}
+        />
       </div>
     </div>
   );

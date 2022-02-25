@@ -1,9 +1,11 @@
+import { DeleteOutlined } from '@ant-design/icons';
+import { message, Modal } from 'antd';
 import albumAPI from 'api/albumAPI';
 import Breadcrumb from 'components/Breadcrumb';
 import moment from 'moment';
 import queryString from 'query-string';
 import React, { useMemo } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 import { transformDateToString } from 'utils';
 import AlbumFilter from '../components/AlbumFilter';
@@ -81,10 +83,35 @@ function ListPage(props) {
     limit: queryParams.limit,
     total: data.pagination?.count,
   };
-  
+
   // if (isError) {
   //   return <Error />;
   // }
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading: deleteLoading } = useMutation((id) => albumAPI.delete(id), {
+    onError: () => {
+      message.error('Xóa thất bại');
+
+    },
+
+    onSuccess: () => {
+      message.success('Xóa thành công');
+      queryClient.invalidateQueries('albums');
+
+    },
+  });
+
+  const handleDelete = (id) => {
+    Modal.confirm({
+      title: 'Bạn chắc chắn đồng ý xóa?',
+      icon: <DeleteOutlined />,
+      confirmLoading: deleteLoading,
+      okText: 'Đồng ý',
+      cancelText: 'Hủy bỏ',
+      onOk: () => mutate(id)
+    });
+  };
 
   return (
     <div className="content-wrapper">
@@ -92,7 +119,13 @@ function ListPage(props) {
 
       <div className="content-padding">
         <AlbumFilter filter={queryParams} onFilterChange={handleFilterChange} onResetFilter={resetFilter} />
-        <AlbumTable list={data.data} isLoading={isLoading} pagination={pagination} onPageChange={handlePageChange} />
+        <AlbumTable
+          list={data.data}
+          isLoading={isLoading}
+          pagination={pagination}
+          onPageChange={handlePageChange}
+          onDelete={handleDelete}
+        />
       </div>
     </div>
   );

@@ -1,12 +1,12 @@
-import { EyeOutlined, PlusOutlined } from '@ant-design/icons/';
+import { DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons/';
 import { Button, Card, Empty, Table, Tag } from 'antd';
 import { statuses } from 'constants';
 import { findInArr } from 'utils';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
-function AlbumTable({ list, isLoading, pagination, onPageChange }) {
+function AlbumTable({ list, isLoading, pagination, onPageChange, onDelete }) {
   const history = useHistory();
   const columns = [
     {
@@ -18,7 +18,7 @@ function AlbumTable({ list, isLoading, pagination, onPageChange }) {
       title: 'Ca sỹ',
       dataIndex: 'artist',
       key: 'artist',
-      render: (value) => <Link to={`/artists/${value._id}`}>{value.fullName}</Link>,
+      render: (value) => <Link to={`/artists/${value?._id}`}>{value?.fullName}</Link>,
     },
     {
       title: 'Thể loại',
@@ -47,13 +47,16 @@ function AlbumTable({ list, isLoading, pagination, onPageChange }) {
       align: 'center',
       render: (value) => {
         return (
-          <Link
-            to={{
-              pathname: `/albums/${value._id}`,
-            }}
-          >
-            <Button type="primary" icon={<EyeOutlined />} />
-          </Link>
+          <Fragment>
+            <Button danger icon={<DeleteOutlined />} className="me-2" onClick={() => onDelete(value?._id)} />
+            <Link
+              to={{
+                pathname: `/albums/${value?._id}`,
+              }}
+            >
+              <Button type="primary" icon={<EyeOutlined />} />
+            </Link>
+          </Fragment>
         );
       },
     },

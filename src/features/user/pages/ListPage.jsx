@@ -1,10 +1,12 @@
+import { DeleteOutlined } from '@ant-design/icons';
+import { message, Modal } from 'antd';
 import userAPI from 'api/userAPI';
 import Breadcrumb from 'components/Breadcrumb';
 import Error from 'components/Error';
 import moment from 'moment';
 import queryString from 'query-string';
 import React, { useMemo } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 import { transformDateToString } from 'utils';
 import UserFilter from '../components/UserFilter';
@@ -83,11 +85,33 @@ function ListPage(props) {
     total: data.pagination?.count,
   };
 
-  console.log(data);
-  
   // if (isError) {
   //   return <Error />;
   // }
+
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading: deleteLoading } = useMutation((id) => userAPI.delete(id), {
+    onError: () => {
+      message.error('Xóa thất bại');
+    },
+
+    onSuccess: () => {
+      message.success('Xóa thành công');
+      queryClient.invalidateQueries('users');
+    },
+  });
+
+  const handleDelete = (id) => {
+    Modal.confirm({
+      title: 'Bạn chắc chắn đồng ý xóa?',
+      icon: <DeleteOutlined />,
+      confirmLoading: deleteLoading,
+      okText: 'Đồng ý',
+      cancelText: 'Hủy bỏ',
+      onOk: () => mutate(id),
+    });
+  };
 
   return (
     <div className="content-wrapper">
@@ -95,7 +119,13 @@ function ListPage(props) {
 
       <div className="content-padding">
         <UserFilter filter={queryParams} onFilterChange={handleFilterChange} onResetFilter={resetFilter} />
-        <UserTable list={data.data} isLoading={isLoading} pagination={pagination} onPageChange={handlePageChange} />
+        <UserTable
+          list={data.data}
+          isLoading={isLoading}
+          pagination={pagination}
+          onPageChange={handlePageChange}
+          onDelete={handleDelete}
+        />
       </div>
     </div>
   );

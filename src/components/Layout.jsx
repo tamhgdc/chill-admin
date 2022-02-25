@@ -4,6 +4,7 @@ import {
   GitlabOutlined,
   PieChartOutlined,
   SnippetsOutlined,
+  UsergroupAddOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
@@ -22,6 +23,7 @@ const AlbumFeature = lazy(() => import('features/album'));
 const PlaylistFeature = lazy(() => import('features/playlist'));
 const ArtistFeature = lazy(() => import('features/artist'));
 const CategoryFeature = lazy(() => import('features/category'));
+const PermissionFeature = lazy(() => import('features/permission'));
 const DashboardFeature = lazy(() => import('features/dashboard'));
 
 const { Header: LayoutHeader, Sider, Content, Footer: LayoutFooter } = Layout;
@@ -82,6 +84,11 @@ export default function DefaultLayout() {
             Quản lý thể loại
             <Link to="/categories" />
           </Menu.Item>
+
+          <Menu.Item key="permission" icon={<UsergroupAddOutlined />}>
+            Quản lý phần quyền
+            <Link to="/permission" />
+          </Menu.Item>
         </Menu>
       </Sider>
       <Layout className="site-layout">
@@ -100,6 +107,7 @@ export default function DefaultLayout() {
                 <Route path="/playlists" component={PlaylistFeature} />
                 <Route path="/albums" component={AlbumFeature} />
                 <Route path="/categories" component={CategoryFeature} />
+                <Route path="/permission" component={PermissionFeature} />
                 <Route component={NotFound} />
               </Switch>
             </Suspense>

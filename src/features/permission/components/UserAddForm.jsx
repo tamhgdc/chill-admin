@@ -1,28 +1,19 @@
 import { Button, Card, DatePicker, Descriptions, Form, Input, message, Modal, Select } from 'antd';
-import userAPI from 'api/userAPI';
+import permissionAPI from 'api/permissionAPI';
 import { DEFAULT_PASSWORD } from 'constants';
 import { genderList, roleList, statuses } from 'constants';
 import moment from 'moment';
 import React from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { requiredLabel } from 'utils';
 import { CheckSquareOutlined } from '@ant-design/icons';
-import permissionAPI from 'api/permissionAPI';
 
-function UserAddForm() {
+function PermissionAddForm() {
   const [form] = Form.useForm();
   const history = useHistory();
 
-  const {
-    data: permissionList,
-    isLoading: permissionLoading,
-  } = useQuery(['permission'], () => permissionAPI.getAll({ limit: 1000 }), {
-    select: (data) => data?.data,
-  });
-
-
-  const { mutate, isLoading } = useMutation((data) => userAPI.add(data), {
+  const { mutate, isLoading } = useMutation((data) => permissionAPI.add(data), {
     onError: () => {
       message.error('Thêm người dùng thất bại!');
     },
@@ -35,7 +26,7 @@ function UserAddForm() {
         cancelText: 'Tạo mới',
         onOk() {
           history.push({
-            pathname: '/users',
+            pathname: '/permission',
           });
           return;
         },
@@ -55,7 +46,7 @@ function UserAddForm() {
   return (
     <Form form={form} onFinish={handleFinish}>
       <Card title="Thêm người dùng">
-        <Descriptions column={1} bordered className="feature-form user-form">
+        <Descriptions column={1} bordered className="feature-form permission-form">
           <Descriptions.Item label={requiredLabel('Họ và tên')}>
             <Form.Item
               className="mb-0"
@@ -130,15 +121,16 @@ function UserAddForm() {
             <Form.Item
               className="mb-0"
               name="role"
-              rules={[{ required: true, message: 'Vui lòng chọn loại người dùng' }]}
+              rules={[{ required: true, message: 'Vui lòng chọn loại người dùng!' }]}
             >
               <Select placeholder="Loại người dùng">
-                {permissionList && permissionList.map((role) => (
-                  <Select.Option value={Number(role.code)}>{role.name}</Select.Option>
+                {roleList.map((role) => (
+                  <Select.Option value={role.id}>{role.name}</Select.Option>
                 ))}
               </Select>
             </Form.Item>
           </Descriptions.Item>
+
           <Descriptions.Item>
             <div className="d-flex justify-content-end">
               <Button danger className="me-2" disabled={isLoading}>
@@ -155,6 +147,6 @@ function UserAddForm() {
   );
 }
 
-UserAddForm.propTypes = {};
+PermissionAddForm.propTypes = {};
 
-export default UserAddForm;
+export default PermissionAddForm;
