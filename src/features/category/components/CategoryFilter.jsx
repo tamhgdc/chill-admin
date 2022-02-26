@@ -27,13 +27,13 @@ function CategoryFilter({ filter, onFilterChange, onResetFilter }) {
           <Col span={24}>
             <Row gutter={8} className="d-flex align-items-center flex-wrap">
               <Col span={6}>
-                <Form.Item className="mb-4" name="id">
-                  <Input placeholder="Id" allowClear />
+                <Form.Item className="mb-4" name="q">
+                  <Input placeholder="Tên" allowClear />
                 </Form.Item>
               </Col>
 
               <Col span={6}>
-                <Form.Item name="status">
+                <Form.Item name="isActive">
                   <Select placeholder="Trạng thái" allowClear>
                     {statuses.map((status) => (
                       <Select.Option key={status.id} value={status.id}>
@@ -44,7 +44,7 @@ function CategoryFilter({ filter, onFilterChange, onResetFilter }) {
                 </Form.Item>
               </Col>
 
-              <Col span={6}>
+              {/* <Col span={6}>
                 <Form.Item name="created_from">
                   <DatePicker
                     format="DD/MM/YYYY"
@@ -64,7 +64,7 @@ function CategoryFilter({ filter, onFilterChange, onResetFilter }) {
                     disabledDate={(value) => checkDisableTo(value, 'created_from', form)}
                   />
                 </Form.Item>
-              </Col>
+              </Col> */}
             </Row>
           </Col>
         </Row>

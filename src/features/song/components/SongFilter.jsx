@@ -23,13 +23,13 @@ function SongFilter({ filter, onFilterChange, onResetFilter }) {
     onResetFilter();
   };
 
-  const { data: categoryList = [] } = useQuery('categories', () => categoryAPI.getAll({ limit: 1000 }), {
+  const { data: categoryList = [] } = useQuery('categories', () => categoryAPI.getAll({ limit: 1000, isActive: true }), {
     select: (value) => value?.data,
   });
 
   const { data: artistList = [], isLoading: artistLoading } = useQuery(
     'artists',
-    () => artistAPI.getAll({ limit: 1000 }),
+    () => artistAPI.getAll({ limit: 1000, isActive: true }),
     {
       select: (value) => value?.data,
     }

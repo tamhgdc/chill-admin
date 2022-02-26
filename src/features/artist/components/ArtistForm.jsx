@@ -28,7 +28,7 @@ function ArtistForm({ data = {}, onUpdate }) {
     setBannerURL(data.bannerURL);
   }, [data]);
 
-  const { data: categoryList = [] } = useQuery('category', () => categoryAPI.getAll({ limit: 1000 }), {
+  const { data: categoryList = [] } = useQuery('category', () => categoryAPI.getAll({ limit: 1000, isActive: true }), {
     select: (value) => value?.data,
   });
 

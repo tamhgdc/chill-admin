@@ -27,11 +27,15 @@ function AlbumForm({ data = {}, onUpdate }) {
     setBannerURL(data.bannerURL);
   }, [data]);
 
-  const { data: categoryList = [] } = useQuery('categories', () => categoryAPI.getAll({ limit: 1000 }), {
-    select: (value) => value?.data,
-  });
+  const { data: categoryList = [] } = useQuery(
+    'categories',
+    () => categoryAPI.getAll({ limit: 1000, isActive: true }),
+    {
+      select: (value) => value?.data,
+    }
+  );
 
-  const { data: songList = [] } = useQuery('songs', () => songAPI.getAll({ limit: 100000 }), {
+  const { data: songList = [] } = useQuery('songs', () => songAPI.getAll({ limit: 100000, isActive: true }), {
     select: (value) => value?.data,
   });
 

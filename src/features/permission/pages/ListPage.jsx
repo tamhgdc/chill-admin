@@ -105,7 +105,7 @@ function ListPage(props) {
   const handleDelete = (id) => {
     Modal.confirm({
       title: 'Bạn chắc chắn đồng ý xóa?',
-      icon: <DeleteOutlined />,
+      icon: <DeleteOutlined style={{ color: '#ef5350' }} />,
       confirmLoading: deleteLoading,
       okText: 'Đồng ý',
       cancelText: 'Hủy bỏ',

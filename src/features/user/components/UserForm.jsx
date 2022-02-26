@@ -18,7 +18,7 @@ function UserForm({ data = {}, onUpdate }) {
   const {
     data: permissionList,
     isLoading: permissionLoading,
-  } = useQuery(['permission'], () => permissionAPI.getAll({ limit: 1000 }), {
+  } = useQuery(['permission'], () => permissionAPI.getAll({ limit: 1000, isActive: true }), {
     select: (data) => data?.data,
   });
 

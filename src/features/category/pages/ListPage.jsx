@@ -25,11 +25,11 @@ function ListPage(props) {
 
   const queryParams = useMemo(() => {
     const params = queryString.parse(location.search);
-    const { code, type, status, created_from, created_to, used_from, used_to, limit, page } = params;
+    const { code, isActive, q, status, created_from, created_to, used_from, used_to, limit, page } = params;
     return {
       ...params,
       code: code ? code : undefined,
-      type: type ? Number(type) : undefined,
+      isActive: isActive ? (isActive === 'false' ? false : true) : undefined,
       status: status ? Number(status) : undefined,
       created_from: created_from ? moment(created_from) : undefined,
       created_to: created_to ? moment(created_to) : undefined,
@@ -109,7 +109,7 @@ function ListPage(props) {
   const handleDelete = (id) => {
     Modal.confirm({
       title: 'Bạn chắc chắn đồng ý xóa?',
-      icon: <DeleteOutlined />,
+      icon: <DeleteOutlined style={{ color: '#ef5350' }} />,
       confirmLoading: deleteLoading,
       okText: 'Đồng ý',
       cancelText: 'Hủy bỏ',
@@ -122,7 +122,7 @@ function ListPage(props) {
       <Breadcrumb routes={breadcrumb} />
 
       <div className="content-padding">
-        {/* <CategoryFilter filter={queryParams} onFilterChange={handleFilterChange} onResetFilter={resetFilter} /> */}
+        <CategoryFilter filter={queryParams} onFilterChange={handleFilterChange} onResetFilter={resetFilter} />
         <CategoryTable
           list={data.data}
           isLoading={isLoading}

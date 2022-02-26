@@ -9,6 +9,10 @@ export const login = createAsyncThunk('auth/login', async (payload) => {
     throw new Error('403');
   }
 
+  if(!data.user.isActive) {
+    throw new Error('400');
+  }
+
   // save data to local storage
   localStorage.setItem(StorageKeys.ACCESS_TOKEN, data.token);
   localStorage.setItem(StorageKeys.USER, JSON.stringify(data.user));

@@ -25,7 +25,7 @@ function UserFilter({ filter, onFilterChange, onResetFilter }) {
 
   const { data: permissionList, isLoading: permissionLoading } = useQuery(
     ['permission'],
-    () => permissionAPI.getAll({ limit: 1000 }),
+    () => permissionAPI.getAll({ limit: 1000, isActive: true }),
     {
       select: (data) => data?.data,
     }

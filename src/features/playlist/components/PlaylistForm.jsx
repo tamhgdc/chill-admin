@@ -19,13 +19,13 @@ function PlaylistForm({ data = {}, onUpdate }) {
 
   const { data: categoryList = [], isLoading: categoryLoading } = useQuery(
     'categories',
-    () => categoryAPI.getAll({ limit: 1000 }),
+    () => categoryAPI.getAll({ limit: 1000, isActive: true }),
     {
       select: (value) => value?.data,
     }
   );
 
-  const { data: songList = [], isLoading: songLoading } = useQuery('songs', () => songAPI.getAll({ limit: 100000 }), {
+  const { data: songList = [], isLoading: songLoading } = useQuery('songs', () => songAPI.getAll({ limit: 100000, isActive: true }), {
     select: (value) => value?.data,
   });
 
