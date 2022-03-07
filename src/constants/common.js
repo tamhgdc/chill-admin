@@ -17,11 +17,33 @@ export const roleList = [
 export const genderList = [
   {
     id: 1,
-    name: 'Nữ',
+    name: 'Nam',
   },
   {
     id: 2,
-    name: 'Nam',
+    name: 'Nữ'
+  }
+]
+
+export const songTypeList = [
+  {
+    id: 1,
+    name: 'Bài hát của người dùng tải lên',
+  },
+  {
+    id: 2,
+    name: 'Bài hát của hệ thống',
+  },
+]
+
+export const playlistTypeList = [
+  {
+    id: 1,
+    name: 'Playlist của người dùng tải lên',
+  },
+  {
+    id: 2,
+    name: 'Playlist của hệ thống',
   },
 ]
 

@@ -1,8 +1,9 @@
 import { Col, DatePicker, Form, Input, Row, Select } from 'antd';
 import CardFilter from 'components/CardFilter';
+import { playlistTypeList } from 'constants';
 import { statuses } from 'constants';
 import React, { useEffect } from 'react';
-import { checkDisableFrom, checkDisableTo } from 'utils';
+import { checkDisableFrom, checkDisableTo, unAccent } from 'utils';
 
 function PlaylistFilter({ filter, onFilterChange, onResetFilter }) {
   const [form] = Form.useForm();
@@ -29,6 +30,26 @@ function PlaylistFilter({ filter, onFilterChange, onResetFilter }) {
               <Col span={6}>
                 <Form.Item className="mb-4" name="q">
                   <Input placeholder="Tên" allowClear />
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item name="type">
+                  <Select
+                    placeholder="Chọn loại playlist"
+                    showSearch
+                    allowClear
+                    filterOption={(input, option) =>
+                      unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
+                    }
+                  >
+                    {playlistTypeList &&
+                      playlistTypeList?.map((playlistType) => (
+                        <Select.Option key={playlistType.id} value={playlistType.id}>
+                          {playlistType.name}
+                        </Select.Option>
+                      ))}
+                  </Select>
                 </Form.Item>
               </Col>
 

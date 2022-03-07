@@ -72,14 +72,14 @@ function PlaylistAddForm() {
   const uploadButton = (
     <div>
       {imageLoading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
+      <div style={{ marginTop: 8 }}>Tải lên</div>
     </div>
   );
 
   const uploadButtonBanner = (
     <div>
       {bannerLoading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
+      <div style={{ marginTop: 8 }}>Tải lên</div>
     </div>
   );
 

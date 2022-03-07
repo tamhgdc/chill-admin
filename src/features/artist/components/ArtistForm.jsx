@@ -2,6 +2,7 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, DatePicker, Descriptions, Form, Input, message, Select, Upload } from 'antd';
 import categoryAPI from 'api/categoryAPI';
 import { IMAGE_API_URL } from 'config';
+import { genderList } from 'constants';
 import { statuses } from 'constants';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
@@ -113,14 +114,14 @@ function ArtistForm({ data = {}, onUpdate }) {
   const uploadButton = (
     <div>
       {imageLoading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
+      <div style={{ marginTop: 8 }}>Tải lên</div>
     </div>
   );
 
   const uploadButtonBanner = (
     <div>
       {bannerLoading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
+      <div style={{ marginTop: 8 }}>Tải lên</div>
     </div>
   );
 
@@ -189,15 +190,11 @@ function ArtistForm({ data = {}, onUpdate }) {
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Trạng thái')}>
-            <Form.Item
-              className="mb-0"
-              name="isActive"
-              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
-            >
-              <Select placeholder="Trạng thái">
-                {statuses.map((status) => (
-                  <Select.Option value={status.id}>{status.name}</Select.Option>
+          <Descriptions.Item label={requiredLabel('Giới tính')}>
+            <Form.Item name="gender">
+              <Select placeholder="Giới tính">
+                {genderList.map((gender) => (
+                  <Select.Option value={gender.id}>{gender.name}</Select.Option>
                 ))}
               </Select>
             </Form.Item>
@@ -248,6 +245,20 @@ function ArtistForm({ data = {}, onUpdate }) {
           <Descriptions.Item label={requiredLabel('Mô tả')}>
             <Form.Item className="mb-0" name="description" rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}>
               <Input.TextArea placeholder="Mô tả" />
+            </Form.Item>
+          </Descriptions.Item>
+
+          <Descriptions.Item label={requiredLabel('Trạng thái')}>
+            <Form.Item
+              className="mb-0"
+              name="isActive"
+              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
+            >
+              <Select placeholder="Trạng thái">
+                {statuses.map((status) => (
+                  <Select.Option value={status.id}>{status.name}</Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           </Descriptions.Item>
 

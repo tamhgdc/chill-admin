@@ -15,13 +15,13 @@ function UserForm({ data = {}, onUpdate }) {
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [avatarURL, setAvatarURL] = useState(null);
 
-  const {
-    data: permissionList,
-    isLoading: permissionLoading,
-  } = useQuery(['permission'], () => permissionAPI.getAll({ limit: 1000, isActive: true }), {
-    select: (data) => data?.data,
-  });
-
+  const { data: permissionList, isLoading: permissionLoading } = useQuery(
+    ['permission'],
+    () => permissionAPI.getAll({ limit: 1000, isActive: true }),
+    {
+      select: (data) => data?.data,
+    }
+  );
 
   useEffect(() => {
     setFieldsValue(data);
@@ -57,8 +57,8 @@ function UserForm({ data = {}, onUpdate }) {
 
   const uploadButton = (
     <div>
-      {avatarLoading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
+      {/* {avatarLoading ? <LoadingOutlined /> : <PlusOutlined />} */}
+      <div style={{ marginTop: 8 }}>Chưa tải lên</div>
     </div>
   );
 
@@ -103,7 +103,7 @@ function UserForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label={requiredLabel('Ảnh đại diện')}>
-            <Form.Item className="mb-0" name="avatarURL">
+            <Form.Item className="mb-0" name="avatarURL" disabled>
               <Upload
                 name="image"
                 listType="picture-card"
@@ -112,6 +112,7 @@ function UserForm({ data = {}, onUpdate }) {
                 action={`${IMAGE_API_URL}images`}
                 beforeUpload={beforeUpload}
                 onChange={handleChange}
+                disabled
               >
                 {avatarURL && !avatarLoading ? (
                   <img src={avatarURL} alt="avatar" style={{ width: '100%' }} />
@@ -128,7 +129,7 @@ function UserForm({ data = {}, onUpdate }) {
               name="fullName"
               rules={[{ required: true, message: 'Vui lòng điền tên người dùng' }]}
             >
-              <Input placeholder="Họ và tên" />
+              <Input placeholder="Họ và tên" disabled />
             </Form.Item>
           </Descriptions.Item>
 
@@ -138,7 +139,7 @@ function UserForm({ data = {}, onUpdate }) {
 
           <Descriptions.Item label={requiredLabel('Giới tính')}>
             <Form.Item className="mb-0" name="gender" rules={[{ required: true, message: 'Vui lòng chọn giới tính' }]}>
-              <Select placeholder="Giới tính">
+              <Select placeholder="Giới tính" disabled>
                 {genderList.map((gender) => (
                   <Select.Option value={gender.id}>{gender.name}</Select.Option>
                 ))}
@@ -158,6 +159,7 @@ function UserForm({ data = {}, onUpdate }) {
                 style={{ display: 'block' }}
                 format="DD/MM/YYYY"
                 allowClear={false}
+                disabled
               />
             </Form.Item>
           </Descriptions.Item>
@@ -169,9 +171,8 @@ function UserForm({ data = {}, onUpdate }) {
               rules={[{ required: true, message: 'Vui lòng chọn loại người dùng' }]}
             >
               <Select placeholder="Loại người dùng">
-                {permissionList && permissionList.map((role) => (
-                  <Select.Option value={Number(role.code)}>{role.name}</Select.Option>
-                ))}
+                {permissionList &&
+                  permissionList.map((role) => <Select.Option value={Number(role.code)}>{role.name}</Select.Option>)}
               </Select>
             </Form.Item>
           </Descriptions.Item>

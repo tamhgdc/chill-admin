@@ -42,6 +42,15 @@ function ArtistTable({ list, isLoading, pagination, onPageChange, onDelete }) {
       },
     },
     {
+      title: 'Ngày tạo',
+      dataIndex: 'createdAt',
+      width: 150,
+      key: 'createdAt',
+      render: (value) => {
+        return formatDate(value);
+      },
+    },
+    {
       title: 'Hành động',
       width: 150,
       fixed: 'right',

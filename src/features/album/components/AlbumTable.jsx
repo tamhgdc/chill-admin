@@ -1,7 +1,7 @@
 import { DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons/';
 import { Button, Card, Empty, Table, Tag } from 'antd';
 import { statuses } from 'constants';
-import { findInArr } from 'utils';
+import { findInArr, formatDate } from 'utils';
 import React, { Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -30,6 +30,15 @@ function AlbumTable({ list, isLoading, pagination, onPageChange, onDelete }) {
       dataIndex: 'view',
       width: 150,
       key: 'view',
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'createdAt',
+      width: 150,
+      key: 'createdAt',
+      render: (value) => {
+        return formatDate(value);
+      },
     },
     {
       title: 'Trạng thái',

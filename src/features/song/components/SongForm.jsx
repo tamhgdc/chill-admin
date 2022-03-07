@@ -19,9 +19,13 @@ function SongForm({ data = {}, onUpdate }) {
   const [imageURL, setImageURL] = useState(null);
   const [mediaURL, setMediaURL] = useState(null);
 
-  const { data: categoryList = [] } = useQuery('categories', () => categoryAPI.getAll({ limit: 1000, isActive: true }), {
-    select: (value) => value?.data,
-  });
+  const { data: categoryList = [] } = useQuery(
+    'categories',
+    () => categoryAPI.getAll({ limit: 1000, isActive: true }),
+    {
+      select: (value) => value?.data,
+    }
+  );
 
   const { data: artistList = [], isLoading: artistLoading } = useQuery(
     'artists',
@@ -76,14 +80,14 @@ function SongForm({ data = {}, onUpdate }) {
   const uploadButton = (
     <div>
       {imageLoading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
+      <div style={{ marginTop: 8 }}>Tải lên</div>
     </div>
   );
 
   const uploadButtonMedia = (
     <div>
       {mediaLoading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
+      <div style={{ marginTop: 8 }}>Tải lên</div>
     </div>
   );
 
@@ -161,6 +165,7 @@ function SongForm({ data = {}, onUpdate }) {
                 action={`${IMAGE_API_URL}images`}
                 beforeUpload={beforeUpload}
                 onChange={handleChange}
+                disabled={data.userId}
               >
                 {imageURL && !imageLoading ? (
                   <img src={imageURL} alt="avatar" style={{ width: '100%' }} />
@@ -185,6 +190,7 @@ function SongForm({ data = {}, onUpdate }) {
                 action={`${UPLOAD_SONG_API_URL}upload-song`}
                 beforeUpload={beforeUploadMedia}
                 onChange={handleChangeMedia}
+                disabled={data.type === 1}
               >
                 {mediaURL && !mediaLoading ? (
                   <audio controls ref={audioRef}>
@@ -199,57 +205,61 @@ function SongForm({ data = {}, onUpdate }) {
 
           <Descriptions.Item label={requiredLabel('Tên')}>
             <Form.Item className="mb-0" name="name" rules={[{ required: true, message: 'Vui lòng điền tên bài hát' }]}>
-              <Input placeholder="Tên" />
+              <Input placeholder="Tên" disabled={data.type === 1} />
             </Form.Item>
           </Descriptions.Item>
 
-          <Descriptions.Item label={requiredLabel('Ca sĩ')}>
-            <Form.Item
-              className="mb-0"
-              name="artistIdList"
-              rules={[{ required: true, message: 'Vui lòng chọn ca sĩ' }]}
-            >
-              <Select
-                mode="multiple"
-                placeholder="Chọn ca sĩ"
-                showSearch
-                loading={artistLoading}
-                filterOption={(input, option) =>
-                  unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
-                }
+          {data.type !== 1 && (
+            <Descriptions.Item label={requiredLabel('Ca sĩ')}>
+              <Form.Item
+                className="mb-0"
+                name="artistIdList"
+                rules={[{ required: true, message: 'Vui lòng chọn ca sĩ' }]}
               >
-                {artistList &&
-                  artistList?.map((artist) => (
-                    <Select.Option key={artist._id} value={artist._id}>
-                      {artist.fullName}
-                    </Select.Option>
-                  ))}
-              </Select>
-            </Form.Item>
-          </Descriptions.Item>
+                <Select
+                  mode="multiple"
+                  placeholder="Chọn ca sĩ"
+                  showSearch
+                  loading={artistLoading}
+                  filterOption={(input, option) =>
+                    unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
+                  }
+                >
+                  {artistList &&
+                    artistList?.map((artist) => (
+                      <Select.Option key={artist._id} value={artist._id}>
+                        {artist.fullName}
+                      </Select.Option>
+                    ))}
+                </Select>
+              </Form.Item>
+            </Descriptions.Item>
+          )}
 
-          <Descriptions.Item label={requiredLabel('Thể loại')}>
-            <Form.Item
-              className="mb-0"
-              name="categoryId"
-              rules={[{ required: true, message: 'Vui lòng chọn thể loại' }]}
-            >
-              <Select
-                placeholder="Chọn thể loại"
-                showSearch
-                filterOption={(input, option) =>
-                  unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
-                }
+          {data.type !== 1 && (
+            <Descriptions.Item label={requiredLabel('Thể loại')}>
+              <Form.Item
+                className="mb-0"
+                name="categoryId"
+                rules={[{ required: true, message: 'Vui lòng chọn thể loại' }]}
               >
-                {categoryList &&
-                  categoryList?.map((category) => (
-                    <Select.Option key={category._id} value={category._id}>
-                      {category.name}
-                    </Select.Option>
-                  ))}
-              </Select>
-            </Form.Item>
-          </Descriptions.Item>
+                <Select
+                  placeholder="Chọn thể loại"
+                  showSearch
+                  filterOption={(input, option) =>
+                    unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
+                  }
+                >
+                  {categoryList &&
+                    categoryList?.map((category) => (
+                      <Select.Option key={category._id} value={category._id}>
+                        {category.name}
+                      </Select.Option>
+                    ))}
+                </Select>
+              </Form.Item>
+            </Descriptions.Item>
+          )}
 
           <Descriptions.Item label={requiredLabel('Trạng thái')}>
             <Form.Item
@@ -270,7 +280,7 @@ function SongForm({ data = {}, onUpdate }) {
           </Descriptions.Item>
 
           <Descriptions.Item label="ID người tạo">
-            <span>{data.userID}</span>
+            <span>{data.userId}</span>
           </Descriptions.Item>
 
           <Descriptions.Item label="Thời gian tạo">

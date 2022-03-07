@@ -2,6 +2,7 @@ import { Col, DatePicker, Form, Input, Row, Select } from 'antd';
 import artistAPI from 'api/artistAPI';
 import categoryAPI from 'api/categoryAPI';
 import CardFilter from 'components/CardFilter';
+import { songTypeList } from 'constants';
 import { statuses } from 'constants';
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
@@ -44,6 +45,26 @@ function SongFilter({ filter, onFilterChange, onResetFilter }) {
               <Col span={6}>
                 <Form.Item className="mb-4" name="q">
                   <Input placeholder="Tên" allowClear />
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item name="type">
+                  <Select
+                    placeholder="Chọn loại bài hát"
+                    showSearch
+                    allowClear
+                    filterOption={(input, option) =>
+                      unAccent(option.children).toLowerCase().indexOf(unAccent(input.trim()).toLowerCase()) !== -1
+                    }
+                  >
+                    {songTypeList &&
+                      songTypeList?.map((songType) => (
+                        <Select.Option key={songType.id} value={songType.id}>
+                          {songType.name}
+                        </Select.Option>
+                      ))}
+                  </Select>
                 </Form.Item>
               </Col>
 

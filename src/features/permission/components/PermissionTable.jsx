@@ -3,7 +3,7 @@ import { Button, Card, Empty, Table, Tag } from 'antd';
 import { statuses } from 'constants';
 import React, { Fragment } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { findInArr } from 'utils';
+import { findInArr, formatDate } from 'utils';
 
 function PermissionTable({ list, isLoading, pagination, onPageChange, onDelete }) {
   const history = useHistory();
@@ -26,6 +26,15 @@ function PermissionTable({ list, isLoading, pagination, onPageChange, onDelete }
       render: (value) => {
         const status = findInArr(statuses, value);
         return <Tag color={status.color}>{status.name}</Tag>;
+      },
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'createdAt',
+      width: 150,
+      key: 'createdAt',
+      render: (value) => {
+        return formatDate(value);
       },
     },
     {
